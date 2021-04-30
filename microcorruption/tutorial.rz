@@ -1,7 +1,7 @@
-e asm.arch = msp430
-e anal.cpu = msp430
-e asm.os = linux
-e bin.lang = c
+e asm.arch=msp430
+e analysis.cpu=msp430
+e asm.os=linux
+e bin.lang=c
 f main 56 @ 0x4438
 f entry0 @ 0x4400
 f loc.__trap_interrupt 17392 @ 0x10
