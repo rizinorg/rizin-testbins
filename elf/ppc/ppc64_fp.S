@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 
 .data
-
+.align 24
 msg:
     .string "Hello, world!\n"
     len = . - msg       # length of our dear string
