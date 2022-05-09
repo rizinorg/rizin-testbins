@@ -127,3 +127,21 @@ load_insns:
 
     lha r11, 0x10(r21) # r11 = -1
     lwa r11, 0x0c(r21) # 0xc << 2 ; r11 = -1
+
+logical_insns:
+    li r0, 0
+    li r1, 1
+    addi r11, r30, -1 # r11 = -1
+    and r21, r11, r1
+    andc r12, r11, r1 # r12 = -2
+    andi. r1, r1, 0xffff
+    andis. r30, r11, 0xffff # r30 = 0x00000000ffff0000
+    or r1, r0, r1
+    orc r12, r0, r1 # r12 = -2
+    ori r5, r0, 0x5555
+    oris r5, r0, 0x5555 # r5 = 0x0000000055550000
+    xor r5, r11, r5 # r5 = 0xffffffffaaaaffff
+    xori r5, r5, 0xcccc # r5 = 0xffffffffaaaa3333
+    xoris r5, r5, 0xcccc # r5 = 0xffffffffaaaa3333
+    nand r12, r1, r1
+    nor r12, r0, r1
