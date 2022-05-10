@@ -18,8 +18,9 @@ store_w:
     .word 0
 .align 4
 store_d:
-    .word 0
-    .word 0
+    .long 0
+.align 4
+
 
 .text
     .global add_insns
@@ -95,7 +96,7 @@ store_insns:
     stb r11, 0x00(r21)
     sth r11, 0x10(r21)
     stw r11, 0x20(r21)
-    std r11, 0x30(r21)
+    std r11, 0x0c(r21) # 0x0c gets shifted to 0x30
 
     stbx r11, r21, r0
     sthx r11, r21, r12
@@ -105,7 +106,7 @@ store_insns:
     stbu r11, 0x00(r21)
     sthu r11, 0x10(r21)
     stwu r11, 0x10(r21)
-    stdu r11, 0x10(r21)
+    stdu r11, 0x04(r21) # 0x04 gets shifted to 0x10
 
 load_insns:
     li r11, 0x00
@@ -118,7 +119,7 @@ load_insns:
     lbz r11, 0x00(r21)
     lhz r11, 0x10(r21)
     lwz r11, 0x20(r21)
-    ld  r11, 0x0c(r21) # 0xc << 2
+    ld  r11, 0x0c(r21) # 0xc << 2 = 0x30
 
     lbzx r11, r21, r0
     lhzx r11, r21, r12
@@ -126,7 +127,7 @@ load_insns:
     ldx  r11, r21, r14
 
     lha r11, 0x10(r21) # r11 = -1
-    lwa r11, 0x0c(r21) # 0xc << 2 ; r11 = -1
+    lwa r11, 0x0c(r21) # 0xc << 2 = 0x30 ; r11 = -1
 
 logical_insns:
     li r0, 0
