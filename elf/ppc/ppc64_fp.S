@@ -33,24 +33,24 @@ add_insns:
     addi  r2, r30, 0x2           # r2 = 2
     addi  r3, r30, 0x3           # r3 = 3
 simple_add:
-    add   r4, r1, r3             # r4 = 4
+    add.   r4, r1, r3             # r4 = 4
 no_carry_16bit_imm:
     addi  r10, r30, -1          # r10 = 0xffffffffff  ca = 0
-    addic r0, r10, 1            # r0 = 0x0 ca = 1
+    addic. r0, r10, 1            # r0 = 0x0 ca = 1
 no_carry_set_neg_imm:
     addis r11, r30, -1          # r11 = 0xffff0000
     addi  r11, r30, -1          # r11 = -1
 carry_set_and_add:
-    addic r12, r11, 1           # r12 = 0 ca = 1
-    adde  r13, r30, r1          # r13 = 2 ca = 0
+    addic. r12, r11, 1           # r12 = 0 ca = 1
+    adde.  r13, r30, r1          # r13 = 2 ca = 0
 carry_add_minus_1:
-    addic r12, r11, 1           # r12 = 0 ca = 1
-    addme r16, r0               # r16 = 0 ca = 0
+    addic. r12, r11, 1           # r12 = 0 ca = 1
+    addme. r16, r0               # r16 = 0 ca = 0
 carry_add:
-    addic r12, r11, 1           # r12 = 0 ca = 1
-    addze r17, r0               # r17 = 1 ca = 0
+    addic. r12, r11, 1           # r12 = 0 ca = 1
+    addze. r17, r0               # r17 = 1 ca = 0
 cr0_neg_result:
-    addme r17, r0               # r17 = -1 ca = 0
+    addme. r17, r0               # r17 = -1 ca = 0
 
     blr
 
@@ -60,25 +60,25 @@ sub_insns:
     li r2, 2
     li r3, 3
 simple_sub_cr0:
-    subf r1, r2, r3             # r1 = 1
-    subf r0, r1, r1             # r0 = 0
-    subf r11, r1, r0            # r11 = -1
+    subf. r1, r2, r3             # r1 = 1
+    subf. r0, r1, r1             # r0 = 0
+    subf. r11, r1, r0            # r11 = -1
 simple_sub_carry:
-    subfc r11, r1, r0           # ca = 0
-    subfc r0, r1, r1            # ca = 1
+    subfc. r11, r1, r0           # ca = 0
+    subfc. r0, r1, r1            # ca = 1
 sub_imm_carry:
     subfic r11, r1, 0           # ca = 0
     subfic r0, r2, 2            # ca = 1
 sub_carry_add:
-    subfe r11, r1, r30          # r11 = -1 ca = 0
-    subfe r12, r1, r30          # r12 = -2 ca = 0
+    subfe. r11, r1, r30          # r11 = -1 ca = 0
+    subfe. r12, r1, r30          # r12 = -2 ca = 0
 sub_carry_minus_one:
-    subfme r13, r1              # r13 = -3 ca = 1
-    subfme r12, r1              # r12 = -2 ca = 0
+    subfme. r13, r1              # r13 = -3 ca = 1
+    subfme. r12, r1              # r12 = -2 ca = 0
 sub_not_ra_carry:
-    subfze r11, r0              # r11 = -1 ca = 0
-    subfc r0, r1, r1            # ca = 1
-    subfze r10, r0              # r10 = 0 ca = 1
+    subfze. r11, r0              # r11 = -1 ca = 0
+    subfc. r0, r1, r1            # ca = 1
+    subfze. r10, r0              # r10 = 0 ca = 1
 
     blr
 
