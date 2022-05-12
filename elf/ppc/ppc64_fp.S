@@ -22,63 +22,16 @@ store_d:
 .align 4
 
 .rodata
-min_sd:
-    .llong 0x8000000000000000
-min_sw:
-    .long 0x80000000
-min_sh:
-    .hword 0x8000
-min_sb:
-    .byte 0x80
-min_ud:
-    .llong 0x0
-min_uw:
-    .long 0x0
-min_uh:
-    .hword 0x0
-min_ub:
-    .byte 0x0
-max_sd:
-    .llong 0x7fffffffffffffff
-max_sw:
-    .long 0x7fffffff
-max_sh:
-    .hword 0x7fff
-max_sb:
-    .byte 0x7f
-max_ud:
-    .llong 0xffffffffffffffff
-max_uw:
-    .long 0xffffffff
-max_uh:
-    .hword 0xffff
-max_ub:
-    .byte 0xff
-.align 4
+.include "ppc_helper.rodata.S"
 
 
 .text
-
-    .global max_sd_into_r28
-    .global min_sd_into_r27
-    .global max_sw_into_r28
-    .global min_sw_into_r27
-    .global max_sh_into_r28
-    .global min_sh_into_r27
-    .global max_sb_into_r28
-    .global min_sb_into_r27
-    .global max_ud_into_r28
-    .global min_ud_into_r27
-    .global max_uw_into_r28
-    .global min_uw_into_r27
-    .global max_uh_into_r28
-    .global min_uh_into_r27
-    .global max_ub_into_r28
-    .global min_ub_into_r27
     .global add_insns
     .global sub_insns
     .global store_insns
     .global load_insns
+
+.include "ppc_helper.text.S"
 
 add_insns:
     addi  r1, r30, 0x1           # r1 = 1
@@ -201,115 +154,29 @@ logical_insns:
 
 compare_insns:
     li r0, 0
-    li r1, 1
-    addi r11, r30, -1 # r11 = -1
 
-    cmpw 0, r0, r1
-    cmpd 1, r0, r1
-    cmplw 4, r0, r1
-    cmpld 5, r0, r1
-    cmpwi 2, r0, -1
-    cmpdi 3, r0, 1
-    cmplwi 6, r0, 0
+    bl max_sw_into_r28
+    cmpw 0, r0, r28
+    bl max_sd_into_r28
+    cmpd 0, r0, r28
+
+    bl min_sw_into_r27
+    cmpd 1, r0, r27
+    bl min_sd_into_r27
+    cmpd 1, r0, r27
+
+    bl max_uw_into_r28
+    cmplw 2, r0, r28
+    bl max_ud_into_r28
+    cmpld 2, r0, r28
+
+    bl min_uw_into_r27
+    cmplw 3, r0, r27
+    bl min_ud_into_r27
+    cmpld 3, r0, r27
+
+    cmpwi 4, r0, -1
+    cmpdi 5, r0, 1
+    cmplwi 6, r0, -1
     cmpldi 7, r0, 1
 
-
-# Helper max (un)signed into r28
-
-max_sd_into_r28:
-    lis r20, max_sd@ha
-    la r20, max_sd@l(r21)
-    ld r28, 0(r20)
-    blr
-
-max_sw_into_r28:
-    lis r20, max_sw@ha
-    la r20, max_sw@l(r21)
-    lwa r28, 0(r20)
-    blr
-
-max_sh_into_r28:
-    lis r20, max_sh@ha
-    la r20, max_sh@l(r21)
-    lha r28, 0(r20)
-    blr
-
-max_sb_into_r28:
-    lis r20, max_sb@ha
-    la r20, max_sb@l(r21)
-    lbz r28, 0(r20)
-    blr
-
-max_ud_into_r28:
-    lis r20, max_ud@ha
-    la r20, max_ud@l(r21)
-    ld r28, 0(r20)
-    blr
-
-max_uw_into_r28:
-    lis r20, max_uw@ha
-    la r20, max_uw@l(r21)
-    lwz r28, 0(r20)
-    blr
-
-max_uh_into_r28:
-    lis r20, max_uh@ha
-    la r20, max_uh@l(r21)
-    lhz r28, 0(r20)
-    blr
-
-max_ub_into_r28:
-    lis r20, max_ub@ha
-    la r20, max_ub@l(r21)
-    lbz r28, 0(r20)
-    blr
-
-# Helper min (un)signed into r27
-
-min_sd_into_r27:
-    lis r20, min_sd@ha
-    la r20, min_sd@l(r21)
-    ld r27, 0(r20)
-    blr
-
-min_sw_into_r27:
-    lis r20, min_sw@ha
-    la r20, min_sw@l(r21)
-    lwa r27, 0(r20)
-    blr
-
-min_sh_into_r27:
-    lis r20, min_sh@ha
-    la r20, min_sh@l(r21)
-    lha r27, 0(r20)
-    blr
-
-min_sb_into_r27:
-    lis r20, min_sb@ha
-    la r20, min_sb@l(r21)
-    lbz r27, 0(r20)
-    blr
-
-min_ud_into_r27:
-    lis r20, min_ud@ha
-    la r20, min_ud@l(r21)
-    ld r27, 0(r20)
-    blr
-
-min_uw_into_r27:
-    lis r20, min_uw@ha
-    la r20, min_uw@l(r21)
-    lwz r27, 0(r20)
-    blr
-
-min_uh_into_r27:
-    lis r20, min_uh@ha
-    la r20, min_uh@l(r21)
-    lhz r27, 0(r20)
-    blr
-
-min_ub_into_r27:
-    lis r20, min_ub@ha
-    la r20, min_ub@l(r21)
-    lbz r27, 0(r20)
-    blr
