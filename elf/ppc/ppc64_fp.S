@@ -30,6 +30,8 @@ store_d:
     .global sub_insns
     .global store_insns
     .global load_insns
+    .global compare_insns
+    .global branch_insns
 
 .include "ppc_helper.text.S"
 
@@ -179,4 +181,29 @@ compare_insns:
     cmpdi 5, r0, 1
     cmplwi 6, r0, -1
     cmpldi 7, r0, 1
+
+branch_insns:
+    li r1, 1
+    li r20, 0
+    # Branch to:
+    # Relative address
+    bl target_blr
+    # CTR
+    lis r20, target_blr@ha
+    la r20, target_blr@l(r20)
+    mtctr r20
+    bctrl
+    # decrement ctr.
+    # CTR != 0
+    bdnzl target_blr
+    # CTR == 0
+    mtctr r1
+    bdzl target_blr
+    # Not implemented by capstone:
+    # CR = 0 CR = 1
+    # Absolute address
+    ba 0xc0ffe0 # Branch into nowhere
+target_blr:
+    # Branch to LR
+    blr
 
