@@ -199,8 +199,11 @@ branch_insns:
     # CTR == 0
     mtctr r1
     bdzl target_blr
-    # Not implemented by capstone:
-    # CR = 0 CR = 1
+    # Branch if CR_6.0 = 0  (cr_6.0 = less than bit.)
+    bcl 4, 24, target_blr
+    # Branch if CR_0.3 == 1  (cr_0.2 = equal bit)
+    cmpw 0, r0, r30
+    bcl 12, 2, target_blr
     # Absolute address
     ba 0xc0ffe0 # Branch into nowhere
 target_blr:
