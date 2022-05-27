@@ -1123,12 +1123,15 @@ both = list()
 none = list()
 
 def print_stats(stat_file):
+    sum_insn = 0
+
     with open(stat_file) as f:
         for l in f:
             line = l.strip()
             count, rest = line.split(' ')
             insn, e, r = rest.split('\t')
             insn = int(insn)
+            count = int(count)
             if e == 'e' and r == 'r':
                 both.append({'name': insns_ids(insn).name, 'count': count})
             elif e == 'e' and r == 'x':
@@ -1139,23 +1142,36 @@ def print_stats(stat_file):
                 none.append({'name': insns_ids(insn).name, 'count': count})
             else:
                 print(f'Incorrect formatted: e = {e} r = {r}')
+            sum_insn += count
 
     print(f'\nSTATS FOR "{stat_file}"\n')
     print("Not implemented in ESIL or RZIL\n")
-    for i in none:
-        print(f'{i["name"]}\t{i["count"]}')
+    for p, i in enumerate(none):
+        print(f'{i["name"]}\t{(i["count"]/sum_insn):.5%}')
+        if p == 10:
+            print(f'\n^ TOP {p+1}\n...')
+            break
 
     print("\nRZIL only\n")
-    for i in rzil_only:
-        print(f'{i["name"]}\t{i["count"]}')
+    for p, i in enumerate(rzil_only):
+        print(f'{i["name"]}\t{(i["count"]/sum_insn):.5%}')
+        if p == 10:
+            print(f'\n^ TOP {p+1}\n...')
+            break
 
     print("\nESIL only\n")
-    for i in esil_only:
-        print(f'{i["name"]}\t{i["count"]}')
+    for p, i in enumerate(esil_only):
+        print(f'{i["name"]}\t{(i["count"]/sum_insn):.5%}')
+        if p == 10:
+            print(f'\n^ TOP {p+1}\n...')
+            break
 
-    # print("\nBoth\n")
-    # for i in both:
-    #     print(f'{i["name"]}\t{i["count"]}')
+    print("\nBoth\n")
+    for p, i in enumerate(both):
+        print(f'{i["name"]}\t{((i["count"]/sum_insn)):.5%}')
+        if p == 10:
+            print(f'\n^ TOP {p+1}\n...')
+            break
 
 if __name__ == '__main__':
     print_stats(sys.argv[1])
