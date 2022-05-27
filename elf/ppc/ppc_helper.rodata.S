@@ -34,3 +34,7 @@ max_uh:
 max_ub:
     .byte 0xff
 .align 4
+rotate_test_pattern:
+    .llong 0xfedcba9876543210
+rotate_test_pattern_rev:
+    .llong 0x0123456789abcdef
