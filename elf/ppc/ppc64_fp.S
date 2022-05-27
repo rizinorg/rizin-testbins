@@ -210,3 +210,47 @@ target_blr:
     # Branch to LR
     blr
 
+shift_insns:
+
+    li r4, 4
+
+    lis r20, rotate_test_pattern@ha
+    la r20, rotate_test_pattern@l(r20)
+    ld r20, 0x0(r20)
+    # 0xfedcba9876543210
+    sld r10, r20, r4 # r10 = 0xedcba98765432100
+    srd r10, r20, r4 # r10 = 0x0fedcba987654321
+    slw r10, r20, r4 # r10 = 0x0000000065432100
+    srw r10, r20, r4 # r10 = 0x0000000007654321
+    srad r10, r20, r4 # r10 = 0xffedcba987654321
+    sradi r10, r20, 4 # r10 = 0xffedcba987654321
+    lis r22, rotate_test_pattern_rev@ha
+    la r22, rotate_test_pattern_rev@l(r22)
+    ld r22, 0x0(r22)
+    sraw r10, r22, r4 # r10 = 0xfffffffff89abcde
+    srawi r10, r22, 4 # r10 = 0xfffffffff89abcde
+
+rotate_insns:
+    li r4, 4
+    lis r20, rotate_test_pattern@ha
+    la r20, rotate_test_pattern@l(r20)
+    ld r20, 0x0(r20)
+
+    rlwimi r10, r20, 8, 4, 16 # mstart < mstop  | rot: r10 = 0x54321076_54321076 -> mask r10 = 0x00000000_04320000
+    rlwimi r10, r20, 8, 16, 4 # mstart > mstop  | rot: r10 = 0x54321076_54321076 -> mask r10 = 0x54321076_54321076
+    li r10, 0
+    rlwimi r10, r20, 8, 16, 4 # mstart > mstop  | rot: r10 = 0xdcba9876_54321000 -> mask r10 = 0x54321076_50001076
+    li r10, 0
+    rlwimi r10, r20, 8, 4, 4  # mstart == mstop | rot: r10 = 0x54321076_54321076 -> mask r10 = 0x54321076_54321076
+
+    rldicl r10, r20, 4, 16 # r10 = 0x0000a987_6543210f
+
+    li r10, 0
+    rldimi r10, r20, 4, 8 # Mask mstart < mstop ? rot: r10 = 0xedcba987_6543210f -> mask r10 = 0x00cba987_65432100
+    rotld r10, r20, 4     # r10 = 0xedcba987_6543210f
+    rotlw r10, r20, 4     # r10 = 0x65432107_65432107
+    clrldi r10, r20, 12   # r10 = 0x000cba98_76543210
+    clrlwi r10, r20, 12   # r10 = 0x00000000_00043210
+
+
+
