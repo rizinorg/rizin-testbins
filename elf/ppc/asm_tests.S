@@ -96,3 +96,7 @@ asm:
 	blr
 	blrl
     nop
+    mtctr r28
+    mfctr r28
+    mtlr r28
+    mflr r28
