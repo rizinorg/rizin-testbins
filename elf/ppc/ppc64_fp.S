@@ -251,6 +251,9 @@ rotate_insns:
     rotlw r10, r20, 4     # r10 = 0x65432107_65432107
     clrldi r10, r20, 12   # r10 = 0x000cba98_76543210
     clrlwi r10, r20, 12   # r10 = 0x00000000_00043210
+    clrldi. r10, r20, 1   # r10 = 0x7edcba98_76543210
+    clrldi. r10, r20, 0   # r10 = 0xfedcba98_76543210
+    clrldi. r10, r20, 60  # r10 = 0x00000000_00000000
 
 
 
