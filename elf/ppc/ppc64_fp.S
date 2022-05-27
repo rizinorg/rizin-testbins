@@ -183,6 +183,7 @@ logical_insns:
     xoris r5, r5, 0xcccc # r5 = 0xffffffffaaaa3333
     nand r12, r1, r1
     nor r12, r0, r1
+    mr r20, r5          # r20 = 0xffffffffaaaaffff
 
 compare_insns:
     li r0, 0

@@ -50,6 +50,7 @@ asm:
     andc r0, r1, r2
     andi. r0, r2, 0x4
     andis. r30, r0, 0x4
+    mr r5, r20
     or r0, r30, r1
     orc r0, r1, r2
     ori r0, r30, 0x4
