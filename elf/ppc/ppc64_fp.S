@@ -35,6 +35,35 @@ store_d:
 
 .include "ppc_helper.text.S"
 
+
+branch_insns:
+    li r1, 1
+    li r20, 0
+    # Branch to:
+    # Relative address
+    bl target_blr
+    # CTR
+    lis r20, target_blr@ha
+    la r20, target_blr@l(r20)
+    mtctr r20
+    bctrl
+    # decrement ctr.
+    # CTR != 0
+    bdnzl target_blr
+    # CTR == 0
+    mtctr r1
+    bdzl target_blr
+    # Branch if CR_6.0 = 0  (cr_6.0 = less than bit.)
+    bcl 4, 24, target_blr
+    # Branch if CR_0.3 == 1  (cr_0.2 = equal bit)
+    cmpw 0, r0, r30
+    bcl 12, 2, target_blr
+    # Absolute address
+    ba 0xc0ffe0 # Branch into nowhere
+target_blr:
+    # Branch to LR
+    blr
+
 add_insns:
     addi  r1, r30, 0x1           # r1 = 1
     addi  r2, r30, 0x2           # r2 = 2
@@ -183,33 +212,6 @@ compare_insns:
     cmplwi 6, r0, -1
     cmpldi 7, r0, 1
 
-branch_insns:
-    li r1, 1
-    li r20, 0
-    # Branch to:
-    # Relative address
-    bl target_blr
-    # CTR
-    lis r20, target_blr@ha
-    la r20, target_blr@l(r20)
-    mtctr r20
-    bctrl
-    # decrement ctr.
-    # CTR != 0
-    bdnzl target_blr
-    # CTR == 0
-    mtctr r1
-    bdzl target_blr
-    # Branch if CR_6.0 = 0  (cr_6.0 = less than bit.)
-    bcl 4, 24, target_blr
-    # Branch if CR_0.3 == 1  (cr_0.2 = equal bit)
-    cmpw 0, r0, r30
-    bcl 12, 2, target_blr
-    # Absolute address
-    ba 0xc0ffe0 # Branch into nowhere
-target_blr:
-    # Branch to LR
-    blr
 
 shift_insns:
 
