@@ -100,3 +100,6 @@ asm:
     mfctr r28
     mtlr r28
     mflr r28
+    # sldi r10, r20, 16 # Broken in rizins capstone version
+    slwi r10, r20, 16
+    srwi r10, r20, 16

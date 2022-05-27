@@ -236,6 +236,9 @@ shift_insns:
     ld r22, 0x0(r22)
     sraw r10, r22, r4 # r10 = 0xfffffffff89abcde
     srawi r10, r22, 4 # r10 = 0xfffffffff89abcde
+    # sldi r10, r20, 16 # r10 = 0xba98765432100000 # Broken in rizins capstone version
+    slwi r10, r20, 16 # r10 = 0x0000000032100000
+    srwi r10, r20, 16 # r10 = 0x0000000000007654
 
 rotate_insns:
     li r4, 4
