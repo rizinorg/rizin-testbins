@@ -58,6 +58,7 @@ carry_add:
     addze. r17, r0               # r17 = 1 ca = 0
 cr0_neg_result:
     addme. r17, r0               # r17 = -1 ca = 0
+    neg r17, r17                 # r17 = 1
 
     blr
 
