@@ -103,3 +103,6 @@ asm:
     # sldi r10, r20, 16 # Broken in rizins capstone version
     slwi r10, r20, 16
     srwi r10, r20, 16
+    extsb r10, r27
+    extsh r10, r27
+    extsw r10, r27

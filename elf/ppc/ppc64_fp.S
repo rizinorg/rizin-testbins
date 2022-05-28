@@ -194,6 +194,18 @@ logical_insns:
     nand r12, r1, r1
     nor r12, r0, r1
     mr r20, r5          # r20 = 0xffffffffaaaaffff
+    bl min_sb_into_r27
+    extsb r10, r27
+    bl max_sb_into_r28
+    extsb r10, r28
+    bl min_sh_into_r27
+    extsh r10, r27
+    bl max_sh_into_r28
+    extsh r10, r28
+    bl min_sw_into_r27
+    extsw r10, r27
+    bl max_sw_into_r28
+    extsw r10, r28
 
 compare_insns:
     li r0, 0
