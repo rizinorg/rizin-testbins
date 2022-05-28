@@ -67,6 +67,13 @@ target_blr:
 special_insns:
     nop
 
+read_set_spr:
+    bl max_ud_into_r28
+    mtctr r28
+    mfctr r28
+    mtlr r28
+    mflr r28
+
 add_insns:
     addi  r1, r30, 0x1           # r1 = 1
     addi  r2, r30, 0x2           # r2 = 2
@@ -264,11 +271,4 @@ rotate_insns:
     clrldi. r10, r20, 1   # r10 = 0x7edcba98_76543210
     clrldi. r10, r20, 0   # r10 = 0xfedcba98_76543210
     clrldi. r10, r20, 60  # r10 = 0x00000000_00000000
-
-read_set_spr:
-    bl max_ud_into_r28
-    mtctr r28
-    mfctr r28
-    mtlr r28
-    mflr r28
 
