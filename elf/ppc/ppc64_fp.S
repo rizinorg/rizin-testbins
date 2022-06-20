@@ -32,6 +32,8 @@ store_d:
     .global load_insns
     .global compare_insns
     .global branch_insns
+    .global rotate_insns
+    .global logical_insns
 
 .include "ppc_helper.text.S"
 
@@ -73,6 +75,8 @@ read_set_spr:
     mfctr r28
     mtlr r28
     mflr r28
+
+    blr
 
 add_insns:
     addi  r1, r30, 0x1           # r1 = 1
@@ -155,6 +159,8 @@ store_insns:
     stwu r11, 0x10(r21)
     stdu r11, 0x04(r21) # 0x04 gets shifted to 0x10
 
+    blr
+
 load_insns:
     li r11, 0x00
     li r12, 0x10
@@ -175,6 +181,8 @@ load_insns:
 
     lha r11, 0x10(r21) # r11 = -1
     lwa r11, 0x0c(r21) # 0xc << 2 = 0x30 ; r11 = -1
+
+    blr
 
 logical_insns:
     li r0, 0
@@ -207,6 +215,8 @@ logical_insns:
     bl max_sw_into_r28
     extsw r10, r28
 
+    blr
+
 compare_insns:
     li r0, 0
 
@@ -235,6 +245,7 @@ compare_insns:
     cmplwi 6, r0, -1
     cmpldi 7, r0, 1
 
+    blr
 
 shift_insns:
 
@@ -258,6 +269,8 @@ shift_insns:
     # sldi r10, r20, 16 # r10 = 0xba98765432100000 # Broken in rizins capstone version
     slwi r10, r20, 16 # r10 = 0x0000000032100000
     srwi r10, r20, 16 # r10 = 0x0000000000007654
+
+    blr
 
 rotate_insns:
     li r4, 4
@@ -284,3 +297,4 @@ rotate_insns:
     clrldi. r10, r20, 0   # r10 = 0xfedcba98_76543210
     clrldi. r10, r20, 60  # r10 = 0x00000000_00000000
 
+    blr
