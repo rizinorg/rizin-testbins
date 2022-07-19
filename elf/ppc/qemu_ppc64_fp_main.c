@@ -23,7 +23,7 @@ int main() {
     rotate_insns();
     set_gpr_to_0();
     logical_insns();
-    branch_insns();
     set_gpr_to_0();
+    branch_insns();
     return 0;
 }
