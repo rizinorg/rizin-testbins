@@ -28,3 +28,6 @@ if (/* Instruction correctly disassembled */) {
 ```
 
 `gen_stats.py` Writes the stdout into `.stats` files.
+
+
+**You need to set the ENUM names in print_instructions**
