@@ -78,6 +78,13 @@ read_set_spr:
 
     blr
 
+# Instructions which are PC/LR independed below
+
+test_loads:
+    bl store_insns
+    bl load_insns
+    blr
+
 add_insns:
     addi  r1, r30, 0x1           # r1 = 1
     addi  r2, r30, 0x2           # r2 = 2
@@ -147,7 +154,7 @@ store_insns:
     stb r11, 0x00(r21)
     sth r11, 0x10(r21)
     stw r11, 0x20(r21)
-    std r11, 0x0c(r21) # 0x0c gets shifted to 0x30
+    std r11, 0x30(r21)
 
     stbx r11, r21, r0
     sthx r11, r21, r12
@@ -157,7 +164,7 @@ store_insns:
     stbu r11, 0x00(r21)
     sthu r11, 0x10(r21)
     stwu r11, 0x10(r21)
-    stdu r11, 0x04(r21) # 0x04 gets shifted to 0x10
+    stdu r11, 0x10(r21)
 
     blr
 
@@ -172,7 +179,7 @@ load_insns:
     lbz r11, 0x00(r21)
     lhz r11, 0x10(r21)
     lwz r11, 0x20(r21)
-    ld  r11, 0x0c(r21) # 0xc << 2 = 0x30
+    ld  r11, 0x30(r21)
 
     lbzx r11, r21, r0
     lhzx r11, r21, r12
@@ -180,7 +187,7 @@ load_insns:
     ldx  r11, r21, r14
 
     lha r11, 0x10(r21) # r11 = -1
-    lwa r11, 0x0c(r21) # 0xc << 2 = 0x30 ; r11 = -1
+    lwa r11, 0x30(r21)
 
     blr
 
