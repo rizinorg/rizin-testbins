@@ -37,34 +37,84 @@ store_d:
 
 .include "ppc_helper.text.S"
 
+target_blr:
+    # Branch to LR
+    blr
 
+# We do not test all branch instructions and mnemonics here.
+# Simply because almost all of them share the some exec path.
+# So instead we test each of those paths.
 branch_insns:
     li r1, 1
     li r20, 0
-    # Branch to:
-    # Relative address
+
+    # Branch to relative address
     bl target_blr
-    # CTR
+
+    # Branch to CTR
     lis r20, target_blr@ha
     la r20, target_blr@l(r20)
     mtctr r20
     bctrl
-    # decrement ctr.
+
+    # Decrement CTR and branch
     # CTR != 0
     bdnzl target_blr
+
     # CTR == 0
     mtctr r1
     bdzl target_blr
-    # Branch if CR_6.0 = 0  (cr_6.0 = less than bit.)
+
+    # Branch if certain CRx bits are set
+    # Branch if CR_6.0 == 0  (cr_6.0 is the "less than" bit.)
     bcl 4, 24, target_blr
-    # Branch if CR_0.3 == 1  (cr_0.2 = equal bit)
+
+    # Branch if CR_0.3 == 1  (cr_0.2 is the "equal" bit)
     cmpw 0, r0, r30
     bcl 12, 2, target_blr
-    # Absolute address
+
+    # Branch if CTR != 0 && CR0 == 0
+    mtctr r20
+    # Set all CRx to 0xf except CR0, CR3, CR7
+    # r10 = 0x0ff0ff0
+    addis r10, 0, 0x0fff
+    addi r10, r10, 0x0ff0
+    mtcr r10
+    bdnzfl 0, target_blr
+
+    # Branch if CTR != 0 && CR3 == 1
+    li r10, 0x1000
+    # CR3 = 1
+    mtcrf 0x8, r10
+    bdnztl 3, target_blr
+
+    # Branch if CTR == 0 && CR5 == 0
+    mtctr r1
+    # CR5 = 0
+    mtcrf 0x20, r0
+    bdzfl 5, target_blr
+
+    # Branch if CTR == 0 && CR7 == 1
+    mtctr r1
+    # CR7 = 1
+    li r10, 0
+    addis r10, r10, 0x1000
+    mtcrf 0x80, r10
+    bdztl 7, target_blr
+
+    # CTR != 0 (don't branch)
+    mtctr r0
+    bdztl 7, target_blr
+
+    # CTR == 0 but cr0 != 1 (don't branch)
+    mtctr r1
+    li r3, 3
+    mtcrf 0x1, r3
+    bdztl 0, target_blr
+
+    # Branch to Absolute address
     ba 0xc0ffe0 # Branch into nowhere
-target_blr:
-    # Branch to LR
-    blr
+
 
 special_insns:
     nop
