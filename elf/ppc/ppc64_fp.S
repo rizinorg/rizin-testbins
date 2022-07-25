@@ -278,6 +278,21 @@ logical_insns:
     bl max_sw_into_r28
     extsw r10, r28
 
+    bl min_ud_into_r27
+    # r13 = 64
+    cntlzd r13, r27
+    bl max_ud_into_r28
+    # r13 = 0
+    cntlzd r13, r28
+    bl max_uw_into_r28
+    # r13 = 32
+    cntlzd r13, r28
+    # r13 = 0
+    cntlzw r13, r28
+    bl min_uw_into_r27
+    # r13 = 32
+    cntlzw r13, r27
+
     blr
 
 compare_insns:
