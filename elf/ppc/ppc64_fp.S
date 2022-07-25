@@ -115,9 +115,15 @@ branch_insns:
     # Branch to Absolute address
     ba 0xc0ffe0 # Branch into nowhere
 
-
 special_insns:
     nop
+    xnop
+    # 64bit compiler (musl and gnu) doesn't supports intstruction
+    # li r1, 1
+    # li r4, 0x00004000
+    # mtcrf 0x4, r4
+    # isel r10, 0, r1, 14
+    # isel r10, 0, r1, 0
 
 read_set_spr:
     bl max_ud_into_r28
