@@ -361,3 +361,17 @@ rotate_insns:
     clrldi. r10, r20, 60  # r10 = 0x00000000_00000000
 
     blr
+
+cr_logical_insns:
+    # Set cr2.0 = 1 (bit 23) and cr5.3 = 1 (bit 8)
+    li r10, 0x0100
+    addis r10, r10, 0x0080
+    mtcr r10
+    crclr 23
+    crset 23
+    # Set bit 23 again
+    cror 23, 23, 8
+    # Clear bit 23
+    cror 23, 24, 9
+    # Clear bit 8
+    cror 8, 23, 23
