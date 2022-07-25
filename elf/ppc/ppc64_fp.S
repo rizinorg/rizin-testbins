@@ -376,12 +376,12 @@ rotate_insns:
     la r20, rotate_test_pattern@l(r20)
     ld r20, 0x0(r20)
 
-    rlwimi r10, r20, 8, 4, 16 # mstart < mstop  | rot: r10 = 0x54321076_54321076 -> mask r10 = 0x00000000_04320000
-    rlwimi r10, r20, 8, 16, 4 # mstart > mstop  | rot: r10 = 0x54321076_54321076 -> mask r10 = 0x54321076_54321076
+    rlwimi r10, r20, 8, 4, 16 # mstart < mstop  | r10 = 0x00000000_04320000
+    rlwimi r10, r20, 8, 16, 4 # mstart > mstop  | r10 = 0x54321076_54321076
     li r10, 0
-    rlwimi r10, r20, 8, 16, 4 # mstart > mstop  | rot: r10 = 0xdcba9876_54321000 -> mask r10 = 0x54321076_50001076
+    rlwimi r10, r20, 8, 16, 4 # mstart > mstop  | r10 = 0x54321076_50001076
     li r10, 0
-    rlwimi r10, r20, 8, 4, 4  # mstart == mstop | rot: r10 = 0x54321076_54321076 -> mask r10 = 0x54321076_54321076
+    rlwimi r10, r20, 8, 5, 5  # mstart == mstop | r10 = 0x4000000
 
     rldicl r10, r20, 4, 16 # r10 = 0x0000a987_6543210f
 
