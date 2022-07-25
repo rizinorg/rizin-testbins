@@ -390,3 +390,8 @@ cr_logical_insns:
     cror 23, 24, 9
     # Clear bit 8
     cror 8, 23, 23
+    mtcr r10
+    # cr7 = 1
+    mcrf 7, 2
+    # cr7 = 1
+    mcrf 7, 7
