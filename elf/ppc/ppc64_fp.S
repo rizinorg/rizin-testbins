@@ -245,6 +245,16 @@ load_insns:
     lha r11, 0x10(r21) # r11 = -1
     lwa r11, 0x30(r21)
 
+    lis r20, rotate_test_pattern_rev@ha
+    la r20, rotate_test_pattern_rev@l(r20)
+
+    # r11 = 0x2301
+    lhbrx r11, 0, r20
+    # r11 = 0x67452301
+    lwbrx r11, 0, r20
+    # r11 = 0xefcdab8967452301
+    # ldbrx r11, 0, r20
+
     blr
 
 logical_insns:
