@@ -323,6 +323,16 @@ compare_insns:
     cmplwi 6, r0, -1
     cmpldi 7, r0, 1
 
+    # lis r20, rotate_test_pattern@ha
+    # la r20, rotate_test_pattern@l(r20)
+    # ld r10, 0x0(r20)
+    # ld r11, 0x0(r20)
+    # # r9 = -1
+    # cmpb r9, r10, r11
+    # andi. r10, r10, 0xff00
+    # # r9 = 0xff00
+    # cmpb r9, r10, r11
+
     blr
 
 shift_insns:
