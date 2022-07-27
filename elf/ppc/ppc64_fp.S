@@ -429,3 +429,31 @@ cr_logical_insns:
     mcrf 7, 2
     # cr7 = 1
     mcrf 7, 7
+
+div_mul_insns:
+    bl minus_one_into_r11
+
+    bl max_sw_into_r28
+	mullw r30, r28, r11
+
+    bl max_sd_into_r28
+	mulli r30, r28, -1
+	mulld r30, r28, r11
+
+    bl min_sd_into_r27
+	mulhd r30, r28, r27
+
+    bl max_sw_into_r28
+    bl min_sw_into_r27
+    mulhw r30, r28, r27
+
+    li r2, 2
+    bl max_ud_into_r28
+    mulhdu r30, r28, r2
+    bl max_uw_into_r28
+	mulhwu r30, r28, r2
+
+    # divd
+	# divdu
+	# divw
+	# divwu
