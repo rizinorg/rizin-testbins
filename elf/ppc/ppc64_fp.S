@@ -453,7 +453,12 @@ div_mul_insns:
     bl max_uw_into_r28
 	mulhwu r30, r28, r2
 
-    # divd
-	# divdu
-	# divw
-	# divwu
+    bl max_sd_into_r28
+    bl minus_one_into_r11
+    divd r30, r28, r11
+	divdu r30, r28, r11
+
+    bl max_sw_into_r28
+    bl minus_one_into_r11
+    divw r30, r28, r11
+	divwu r30, r28, r11
