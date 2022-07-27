@@ -19,6 +19,12 @@ store_w:
 .align 4
 store_d:
     .llong 0
+.align 5
+cache_line:
+    .llong 0xffffffffffffffff
+    .llong 0xffffffffffffffff
+    .llong 0xffffffffffffffff
+    .llong 0xffffffffffffffff
 .align 4
 
 .rodata
@@ -124,6 +130,11 @@ special_insns:
     # mtcrf 0x4, r4
     # isel r10, 0, r1, 14
     # isel r10, 0, r1, 0
+    li r4, 4 # Unalign address. dcbz should reverse this.
+    lis r21, cache_line@ha
+    la r21, cache_line@l(r21)
+    dcbz r21, r4
+
 
 read_set_spr:
     bl max_ud_into_r28
