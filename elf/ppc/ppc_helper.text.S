@@ -120,6 +120,11 @@ min_ub_into_r27:
     lbz r27, 0(r20)
     blr
 
+minus_one_into_r11:
+    addis r11, 0, -1          # r11 = 0xffff0000
+    addi  r11, 0, -1          # r11 = -1
+    blr
+
 set_gpr_to_0:
     li r0, 0
     li r1, 0
