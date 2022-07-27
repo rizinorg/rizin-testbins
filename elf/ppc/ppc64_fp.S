@@ -314,6 +314,9 @@ logical_insns:
     # r13 = 32
     cntlzw r13, r27
 
+    eqv r11, r11, r11
+    eqv r31, r1, r0
+
     blr
 
 compare_insns:
