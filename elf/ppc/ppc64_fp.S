@@ -40,6 +40,12 @@ cache_line:
     .global branch_insns
     .global rotate_insns
     .global logical_insns
+    .global special_insns
+    .global read_set_spr
+    .global test_loads
+    .global shift_insns
+    .global cr_logical_insns
+    .global div_mul_insns
 
 .include "ppc_helper.text.S"
 
