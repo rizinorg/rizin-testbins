@@ -142,6 +142,9 @@ read_set_spr:
     mfctr r28
     mtlr r28
     mflr r28
+    bl max_ud_into_r28
+    mtxer r28
+    mfxer r0
 
     blr
 
