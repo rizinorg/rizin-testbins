@@ -17,7 +17,6 @@
 .global min_uw_into_r27
 .global min_uh_into_r27
 .global min_ub_into_r27
-.global set_gpr_to_0
 
 
 # Helper max (un)signed into r28
@@ -125,37 +124,76 @@ minus_one_into_r11:
     addi  r11, 0, -1          # r11 = -1
     blr
 
-set_gpr_to_0:
-    li r0, 0
-    li r1, 0
-    li r2, 0
-    li r3, 0
-    li r4, 0
-    li r5, 0
-    li r6, 0
-    li r7, 0
-    li r8, 0
-    li r9, 0
-    li r10, 0
-    li r11, 0
-    li r12, 0
-    li r13, 0
-    li r14, 0
-    li r15, 0
-    li r16, 0
-    li r17, 0
-    li r18, 0
-    li r19, 0
-    li r20, 0
-    li r21, 0
-    li r22, 0
-    li r23, 0
-    li r24, 0
-    li r25, 0
-    li r26, 0
-    li r27, 0
-    li r28, 0
-    li r29, 0
-    li r30, 0
-    li r31, 0
+store_regs:
+    lis r4, reg_file@ha
+    la r4, reg_file@l(r4)
+
+    std r0,  0x00(r4)
+    std r2,  0x10(r4)
+    std r3,  0x20(r4)
+    #std r4,  0x30(r4)
+    std r5,  0x40(r4)
+    std r6,  0x50(r4)
+    std r7,  0x60(r4)
+    std r8,  0x70(r4)
+    std r9,  0x80(r4)
+    std r10, 0x90(r4)
+    std r11, 0xa0(r4)
+    std r12, 0xb0(r4)
+    std r13, 0xc0(r4)
+    std r14, 0xd0(r4)
+    std r15, 0xe0(r4)
+    std r16, 0xf0(r4)
+    std r17, 0x100(r4)
+    std r19, 0x110(r4)
+    std r20, 0x120(r4)
+    std r21, 0x130(r4)
+    std r22, 0x140(r4)
+    std r23, 0x150(r4)
+    std r24, 0x160(r4)
+    std r25, 0x170(r4)
+    std r26, 0x180(r4)
+    std r27, 0x190(r4)
+    std r28, 0x1a0(r4)
+    std r29, 0x1b0(r4)
+    std r30, 0x1c0(r4)
+    std r31, 0x200(r4)
+
+    blr
+
+load_regs:
+    lis r4, reg_file@ha
+    la r4, reg_file@l(r4)
+
+    ld r0,  0x00(r4)
+    ld r2,  0x10(r4)
+    ld r3,  0x20(r4)
+    #ld r4,  0x30(r4)
+    ld r5,  0x40(r4)
+    ld r6,  0x50(r4)
+    ld r7,  0x60(r4)
+    ld r8,  0x70(r4)
+    ld r9,  0x80(r4)
+    ld r10, 0x90(r4)
+    ld r11, 0xa0(r4)
+    ld r12, 0xb0(r4)
+    ld r13, 0xc0(r4)
+    ld r14, 0xd0(r4)
+    ld r15, 0xe0(r4)
+    ld r16, 0xf0(r4)
+    ld r17, 0x100(r4)
+    ld r19, 0x110(r4)
+    ld r20, 0x120(r4)
+    ld r21, 0x130(r4)
+    ld r22, 0x140(r4)
+    ld r23, 0x150(r4)
+    ld r24, 0x160(r4)
+    ld r25, 0x170(r4)
+    ld r26, 0x180(r4)
+    ld r27, 0x190(r4)
+    ld r28, 0x1a0(r4)
+    ld r29, 0x1b0(r4)
+    ld r30, 0x1c0(r4)
+    ld r31, 0x200(r4)
+
     blr

@@ -2,36 +2,14 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 
 .data
-.align 12
-msg:
-    .string "Hello, world!\n"
-    len = . - msg       # length of our dear string
-
-.align 4
-store_b:
-    .byte 0
-.align 4
-store_h:
-    .hword 0
-.align 4
-store_w:
-    .word 0
-.align 4
-store_d:
-    .llong 0
-.align 5
-cache_line:
-    .llong 0xffffffffffffffff
-    .llong 0xffffffffffffffff
-    .llong 0xffffffffffffffff
-    .llong 0xffffffffffffffff
-.align 4
+.include "ppc_helper.data.S"
 
 .rodata
 .include "ppc_helper.rodata.S"
 
 
 .text
+    .global run_all_tests
     .global add_insns
     .global sub_insns
     .global store_insns
@@ -57,7 +35,8 @@ target_blr:
 # Simply because almost all of them share the some exec path.
 # So instead we test each of those paths.
 branch_insns:
-    li r1, 1
+    mflr r30
+    li r23, 1
     li r20, 0
 
     # Branch to relative address
@@ -74,7 +53,7 @@ branch_insns:
     bdnzl target_blr
 
     # CTR == 0
-    mtctr r1
+    mtctr r23
     bdzl target_blr
 
     # Branch if certain CRx bits are set
@@ -82,7 +61,7 @@ branch_insns:
     bcl 4, 24, target_blr
 
     # Branch if CR_0.3 == 1  (cr_0.2 is the "equal" bit)
-    cmpw 0, r0, r30
+    cmpw 0, r0, r19
     bcl 12, 2, target_blr
 
     # Branch if CTR != 0 && CR0 == 0
@@ -101,13 +80,13 @@ branch_insns:
     bdnztl 3, target_blr
 
     # Branch if CTR == 0 && CR5 == 0
-    mtctr r1
+    mtctr r23
     # CR5 = 0
     mtcrf 0x20, r0
     bdzfl 5, target_blr
 
     # Branch if CTR == 0 && CR7 == 1
-    mtctr r1
+    mtctr r23
     # CR7 = 1
     li r10, 0
     addis r10, r10, 0x1000
@@ -119,30 +98,36 @@ branch_insns:
     bdztl 7, target_blr
 
     # CTR == 0 but cr0 != 1 (don't branch)
-    mtctr r1
+    mtctr r23
     li r3, 3
     mtcrf 0x1, r3
     bdztl 0, target_blr
 
     # Branch to Absolute address
-    ba 0xc0ffe0 # Branch into nowhere
+    # ba 0xc0ffe0 # Branch into nowhere
+    mtlr r30
+    blr
 
 special_insns:
     nop
-    xnop
+    xnop    
     # 64bit compiler (musl and gnu) doesn't supports intstruction
-    # li r1, 1
+    # li r23, 1
     # li r4, 0x00004000
     # mtcrf 0x4, r4
-    # isel r10, 0, r1, 14
-    # isel r10, 0, r1, 0
+    # isel r10, 0, r23, 14
+    # isel r10, 0, r23, 0
     li r4, 4 # Unalign address. dcbz should reverse this.
     lis r21, cache_line@ha
     la r21, cache_line@l(r21)
     dcbz r21, r4
 
+    blr
+
 
 read_set_spr:
+    mflr r30
+
     bl max_ud_into_r28
     mtctr r28
     mfctr r28
@@ -152,30 +137,35 @@ read_set_spr:
     mtxer r28
     mfxer r0
 
+    mtlr r30
     blr
 
 # Instructions which are PC/LR independed below
 
 test_loads:
+    mflr r30
+
     bl store_insns
     bl load_insns
+    
+    mtlr r30
     blr
 
 add_insns:
-    addi  r1, r30, 0x1           # r1 = 1
-    addi  r2, r30, 0x2           # r2 = 2
-    addi  r3, r30, 0x3           # r3 = 3
+    addi  r23, r19, 0x1           # r23 = 1
+    addi  r2, r19, 0x2           # r2 = 2
+    addi  r3, r19, 0x3           # r3 = 3
 simple_add:
-    add.   r4, r1, r3             # r4 = 4
+    add.   r4, r23, r3             # r4 = 4
 no_carry_16bit_imm:
-    addi  r10, r30, -1          # r10 = 0xffffffffff  ca = 0
+    addi  r10, r19, -1          # r10 = 0xffffffffff  ca = 0
     addic. r0, r10, 1            # r0 = 0x0 ca = 1
 no_carry_set_neg_imm:
-    addis r11, r30, -1          # r11 = 0xffff0000
-    addi  r11, r30, -1          # r11 = -1
+    addis r11, r19, -1          # r11 = 0xffff0000
+    addi  r11, r19, -1          # r11 = -1
 carry_set_and_add:
     addic. r12, r11, 1           # r12 = 0 ca = 1
-    adde.  r13, r30, r1          # r13 = 2 ca = 0
+    adde.  r13, r19, r23          # r13 = 2 ca = 0
 carry_add_minus_1:
     addic. r12, r11, 1           # r12 = 0 ca = 1
     addme. r16, r0               # r16 = 0 ca = 0
@@ -190,28 +180,28 @@ cr0_neg_result:
 
 sub_insns:
     li r0, 0
-    li r1, 1
+    li r23, 1
     li r2, 2
     li r3, 3
 simple_sub_cr0:
-    subf. r1, r2, r3             # r1 = 1
-    subf. r0, r1, r1             # r0 = 0
-    subf. r11, r1, r0            # r11 = -1
+    subf. r23, r2, r3             # r23 = 1
+    subf. r0, r23, r23             # r0 = 0
+    subf. r11, r23, r0            # r11 = -1
 simple_sub_carry:
-    subfc. r11, r1, r0           # ca = 0
-    subfc. r0, r1, r1            # ca = 1
+    subfc. r11, r23, r0           # ca = 0
+    subfc. r0, r23, r23            # ca = 1
 sub_imm_carry:
-    subfic r11, r1, 0           # ca = 0
+    subfic r11, r23, 0           # ca = 0
     subfic r0, r2, 2            # ca = 1
 sub_carry_add:
-    subfe. r11, r1, r30          # r11 = -1 ca = 0
-    subfe. r12, r1, r30          # r12 = -2 ca = 0
+    subfe. r11, r23, r19          # r11 = -1 ca = 0
+    subfe. r12, r23, r19          # r12 = -2 ca = 0
 sub_carry_minus_one:
-    subfme. r13, r1              # r13 = -3 ca = 1
-    subfme. r12, r1              # r12 = -2 ca = 0
+    subfme. r13, r23              # r13 = -3 ca = 1
+    subfme. r12, r23              # r12 = -2 ca = 0
 sub_not_ra_carry:
     subfze. r11, r0              # r11 = -1 ca = 0
-    subfc. r0, r1, r1            # ca = 1
+    subfc. r0, r23, r23            # ca = 1
     subfze. r10, r0              # r10 = 0 ca = 1
 
     blr
@@ -249,8 +239,8 @@ load_insns:
     li r12, 0x10
     li r13, 0x20
     li r14, 0x30
-    lis r21, store_b@ha
-    la r21, store_b@l(r21)
+    lis r21, load_b@ha
+    la r21, load_b@l(r21)
 
     lbz r11, 0x00(r21)
     lhz r11, 0x10(r21)
@@ -278,22 +268,23 @@ load_insns:
     blr
 
 logical_insns:
+    mflr r30
     li r0, 0
-    li r1, 1
-    addi r11, r30, -1 # r11 = -1
-    and r21, r11, r1
-    andc r12, r11, r1 # r12 = -2
-    andi. r1, r1, 0xffff
-    andis. r30, r11, 0xffff # r30 = 0x00000000ffff0000
-    or r1, r0, r1
-    orc r12, r0, r1 # r12 = -2
+    li r23, 1
+    addi r11, r19, -1 # r11 = -1
+    and r21, r11, r23
+    andc r12, r11, r23 # r12 = -2
+    andi. r23, r23, 0xffff
+    andis. r19, r11, 0xffff # r19 = 0x00000000ffff0000
+    or r23, r0, r23
+    orc r12, r0, r23 # r12 = -2
     ori r5, r0, 0x5555
     oris r5, r0, 0x5555 # r5 = 0x0000000055550000
     xor r5, r11, r5 # r5 = 0xffffffffaaaaffff
     xori r5, r5, 0xcccc # r5 = 0xffffffffaaaa3333
     xoris r5, r5, 0xcccc # r5 = 0xffffffffaaaa3333
-    nand r12, r1, r1
-    nor r12, r0, r1
+    nand r12, r23, r23
+    nor r12, r0, r23
     mr r20, r5          # r20 = 0xffffffffaaaaffff
     bl min_sb_into_r27
     extsb r10, r27
@@ -324,11 +315,13 @@ logical_insns:
     cntlzw r13, r27
 
     eqv r11, r11, r11
-    eqv r31, r1, r0
+    eqv r19, r23, r0
 
+    mtlr r30
     blr
 
 compare_insns:
+    mflr r30
     li r0, 0
 
     bl max_sw_into_r28
@@ -365,7 +358,7 @@ compare_insns:
     # andi. r10, r10, 0xff00
     # # r9 = 0xff00
     # cmpb r9, r10, r11
-
+    mtlr r30
     blr
 
 shift_insns:
@@ -439,35 +432,62 @@ cr_logical_insns:
     # cr7 = 1
     mcrf 7, 7
 
+    blr
+
 div_mul_insns:
+    mflr r30
     bl minus_one_into_r11
 
     bl max_sw_into_r28
-	mullw r30, r28, r11
+	mullw r19, r28, r11
 
     bl max_sd_into_r28
-	mulli r30, r28, -1
-	mulld r30, r28, r11
+	mulli r19, r28, -1
+	mulld r19, r28, r11
 
     bl min_sd_into_r27
-	mulhd r30, r28, r27
+	mulhd r19, r28, r27
 
     bl max_sw_into_r28
     bl min_sw_into_r27
-    mulhw r30, r28, r27
+    mulhw r19, r28, r27
 
     li r2, 2
     bl max_ud_into_r28
-    mulhdu r30, r28, r2
+    mulhdu r19, r28, r2
     bl max_uw_into_r28
-	mulhwu r30, r28, r2
+	mulhwu r19, r28, r2
 
     bl max_sd_into_r28
     bl minus_one_into_r11
-    divd r30, r28, r11
-	divdu r30, r28, r11
+    divd r19, r28, r11
+	divdu r19, r28, r11
 
     bl max_sw_into_r28
     bl minus_one_into_r11
-    divw r30, r28, r11
-	divwu r30, r28, r11
+    divw r19, r28, r11
+	divwu r19, r28, r11
+
+    mtlr r30
+    blr
+
+run_all_tests:
+    mflr r3
+    bl store_regs
+
+    bl add_insns
+    bl sub_insns
+    bl store_insns
+    bl compare_insns
+    bl branch_insns
+    bl rotate_insns
+    bl logical_insns
+#    bl special_insns
+    bl read_set_spr
+    bl shift_insns
+    bl cr_logical_insns
+    bl div_mul_insns
+
+    bl load_regs
+    mtlr r3
+    blr
