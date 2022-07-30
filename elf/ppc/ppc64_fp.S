@@ -111,7 +111,7 @@ branch_insns:
 special_insns:
     nop
     xnop    
-    # 64bit compiler (musl and gnu) doesn't supports intstruction
+    # 64bit compiler (musl and gnu) doesn't support these intstruction
     # li r23, 1
     # li r4, 0x00004000
     # mtcrf 0x4, r4
