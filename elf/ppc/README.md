@@ -1,10 +1,8 @@
 ### Overview
 
 This folder contains the test binaries for the PPC RZIL uplifting.
-The `ppc64_..` binaries are for Rizin only and are merely object files compiled with the assembler.
 
-The binaries starting with `qemu_` are for used for the [tracetest](https://github.com/rizinorg/rz-tracetest) against QEMU.
-They are proper ELF files and call each instruction test in the `ppc64_` object files.
+The binaries starting with `ppc` are used for validation with [tracetest](https://github.com/rizinorg/rz-tracetest) against QEMU.
 
 Run `./build_tests.sh` to build the binaries.
 
@@ -26,4 +24,4 @@ If you find a toolchain which supports more instructions please add it here and 
 ### Writing tests
 
 The tests never use the stack to backup the LR and stack or base pointers. The GPRs are backed up in `run_all_tests` and restored on exit.
-If your test instructions manipulate the LR register it should be backed up into `r30` and restored when the test code returns.
+If your test instructions which manipulate the LR register it should be backed up into `r30` and restored when the test code returns.
