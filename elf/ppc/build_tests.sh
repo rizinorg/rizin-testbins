@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-FileCopyrightText: 2022 Rot127 <unisono@quyllur.org>
+# SPDX-License-Identifier: LGPL-3.0-only
 
 printf "Build 64bit asm test binary\n\n"
 $(powerpc64-linux-musl-as -a64 -mregnames asm_tests.S -o asm_tests)
