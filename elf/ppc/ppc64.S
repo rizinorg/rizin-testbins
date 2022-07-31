@@ -489,6 +489,7 @@ run_all_tests:
     bl add_insns
     bl sub_insns
     bl store_insns
+    bl load_insns
     bl compare_insns
     bl branch_insns
     bl rotate_insns
