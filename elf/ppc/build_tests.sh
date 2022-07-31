@@ -2,8 +2,11 @@
 # SPDX-FileCopyrightText: 2022 Rot127 <unisono@quyllur.org>
 # SPDX-License-Identifier: LGPL-3.0-only
 
-printf "Build 64bit be asm test binary\n\n"
+printf "Build 64bit le asm test binary\n\n"
 $(powerpc64le-linux-gnu-as -a64 -mregnames asm_tests.S -o asm_tests)
+
+printf "Build 64bit le asm  pseudo fuzz test binary\n\n"
+$(powerpc64le-linux-gnu-gcc -static -Wa,-mregnames asm_pseudo_fuzz_main.c asm_pseudo_fuzz_tests.S -o asm_pseudo_fuzz_tests)
 
 printf "Build 64bit le test binary\n\n"
 $(powerpc64le-linux-gnu-gcc -Ttext 0x100000 -static -Wa,-mregnames ppc_main.c ppc64.S -o ppc64le_uplifted)
