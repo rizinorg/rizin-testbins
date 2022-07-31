@@ -23,10 +23,11 @@ After you've installed the toolchains simply run `./build_tests.sh`.
 
 ### Testing
 
-1. To produce a trace of those binaries run them with [BAPs QEMU](https://github.com/BinaryAnalysisPlatform/qemu). It saves the trace in a `.frames` file.
-1. Afterwards run `rz-tracetest` with the generated `.frames` file.
+- To generate the trace of the binary test fiels you need to build [BAPs QEMU](https://github.com/BinaryAnalysisPlatform/qemu) for all `ppc64le` and `ppc`.
+- Afterwards build [rz-tracetest](https://github.com/rizinorg/rz-tracetest).
+- Make sure all tools are in your `PATH` and run `./run_trace_tests.sh`.
 
-**NOTE**:
+**Notes for manual testing**:
 
 - Big endian traces need the `-b` option passed to `rz-tracetest`.
 - Some instructions are broken in Capstone and cannot be emulated properly. Check Rizin's issues to find out which one and ignore them via `rz-tracetests` `-s` option.
