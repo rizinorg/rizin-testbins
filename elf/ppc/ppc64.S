@@ -25,7 +25,23 @@
     .global cr_logical_insns
     .global div_mul_insns
 
-.include "ppc_helper.text.S"
+    .type run_all_tests, @function
+    .type add_insns, @function
+    .type sub_insns, @function
+    .type store_insns, @function
+    .type load_insns, @function
+    .type compare_insns, @function
+    .type branch_insns, @function
+    .type rotate_insns, @function
+    .type logical_insns, @function
+    .type special_insns, @function
+    .type read_set_spr, @function
+    .type test_loads, @function
+    .type shift_insns, @function
+    .type cr_logical_insns, @function
+    .type div_mul_insns, @function
+
+.include "ppc64_helper.text.S"
 
 target_blr:
     # Branch to LR

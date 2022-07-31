@@ -7,26 +7,34 @@ SPDX-License-Identifier: LGPL-3.0-only
 
 This folder contains the test binaries for the PPC RZIL uplifting.
 
-The binaries starting with `ppc` are used for validation with [tracetest](https://github.com/rizinorg/rz-tracetest) against QEMU.
+The binaries are used for validation with [rz-tracetest](https://github.com/rizinorg/rz-tracetest) against QEMU and the RZIL related asm and analysis tests.
 
 Run `./build_tests.sh` to build the binaries.
 
-### Toolchains to build the test binaries
+The 64bit little endian binaries were compiled with the [Intel advance toolchain](https://www.ibm.com/support/pages/advtool-cross-compilers) and the 32bit big endian with the GNU toolchain.
+
+Both toolchains can be installed via the package manager. Find the install instructions for the Intel toolchain at the link above.
+
+**Please note**: The musl toolchains did not work. QEMU segfaults before main is reached. If you get it to work, please open a PR.
 
 The toolchains used to compile the binaries were one of the following:
 
-- PPC cross toolchain from the Ubuntu package repository.
-- The MUSL compiler from: https://musl.cc/#binaries
-- The pre-build Intel PPC toolchain: https://www.ibm.com/support/pages/advance-toolchain-linux-power
+After you've installed the toolchains simply run `./build_tests.sh`.
 
-Not all toolchains support the same instructions or relocation types. But Intel seems to do the best job (supports some instructions and reloc types the others don't).
+### Testing
 
-### Not supported instructions
+1. To produce a trace of those binaries run them with [BAPs QEMU](https://github.com/BinaryAnalysisPlatform/qemu). It saves the trace in a `.frames` file.
+1. Afterwards run `rz-tracetest` with the generated `.frames` file.
 
-Since not all instructions are supported by the toolchains some of the tests are commented out.
-If you find a toolchain which supports more instructions please add it here and open a PR.
+**NOTE**:
 
-### Writing tests
+- Big endian traces need the `-b` option passed to `rz-tracetest`.
+- Some instructions are broken in Capstone and cannot be emulated properly. Check Rizin's issues to find out which one and ignore them via `rz-tracetests` `-s` option.
 
-The tests never use the stack to backup the LR and stack or base pointers. The GPRs are backed up in `run_all_tests` and restored on exit.
-If your test instructions which manipulate the LR register it should be backed up into `r30` and restored when the test code returns.
+### Adding new instructions
+
+- The tests never use the stack to backup the LR register, stack and base pointers. The GPRs are backed up in `run_all_tests` and restored on exit. If you test instructions which manipulate the `LR` register, backup `LR` into `r30` and restored it when the test code returns.
+
+- Due to this backup of `LR` your tests should never use the `r30` register.
+
+- Please add all new instructions to both the 64 and 32bit src files. If it is a 64bit only instruction add it to the corresponding 32bit source file anyways (and comment it out). This way we can do a simple diff between both source files and check that no instruction has been forgotten.

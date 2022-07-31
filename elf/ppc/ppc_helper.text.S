@@ -17,7 +17,27 @@
 .global min_uw_into_r27
 .global min_uh_into_r27
 .global min_ub_into_r27
+.global store_regs
+.global load_regs
 
+.type max_sd_into_r28, @function
+.type max_sw_into_r28, @function
+.type max_sh_into_r28, @function
+.type max_sb_into_r28, @function
+.type max_ud_into_r28, @function
+.type max_uw_into_r28, @function
+.type max_uh_into_r28, @function
+.type max_ub_into_r28, @function
+.type min_sd_into_r27, @function
+.type min_sw_into_r27, @function
+.type min_sh_into_r27, @function
+.type min_sb_into_r27, @function
+.type min_ud_into_r27, @function
+.type min_uw_into_r27, @function
+.type min_uh_into_r27, @function
+.type min_ub_into_r27, @function
+.type store_regs, @function
+.type load_regs, @function
 
 # Helper max (un)signed into r28
 
