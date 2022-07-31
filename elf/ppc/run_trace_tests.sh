@@ -8,15 +8,15 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 
-echo "* Emulate asm_pseudo_fuzz_tests"
-qemu-ppc64le -tracefile asm_pseudo_fuzz_tests.frames asm_pseudo_fuzz_tests
+echo "* Emulate pseudo_fuzz_tests"
+qemu-ppc64le -tracefile pseudo_fuzz_tests.frames pseudo_fuzz_tests
 echo "* Tracetest"
 if [ $# -eq 1 ]; then
-    rz-tracetest -i -s "$1" asm_pseudo_fuzz_tests.frames
+    rz-tracetest -i -s "$1" pseudo_fuzz_tests.frames
 else
-    rz-tracetest -i asm_pseudo_fuzz_tests.frames
+    rz-tracetest -i pseudo_fuzz_tests.frames
 fi
-echo "\n\n* DONE Test asm_pseudo_fuzz_tests\n\n"
+echo "\n\n* DONE Test pseudo_fuzz_tests\n\n"
 
 
 echo "* Emulate ppc32be"
