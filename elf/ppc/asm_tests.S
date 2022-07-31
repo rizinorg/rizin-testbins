@@ -13,10 +13,10 @@ asm_collection:
     # fill random data
     # mtctr r0
     # bctrl
-    addi  r0, r30, 0x4
+    addi  r0, r26, 0x4
     add r0, r1, r2
     addic r0, r1, 1
-    addis r0, r30, 1
+    addis r0, r26, 1
     addme r0, r2
     addze r0, r2
     adde r0, r2, r1
@@ -31,65 +31,65 @@ asm_collection:
 
     ### STORES BEGIN
     # Set store playground
-    # lis r30, store_b@ha
-    # la r30, store_b@l(r30)
+    # lis r26, store_b@ha
+    # la r26, store_b@l(r26)
     dcbz r1, r0
-    stb r0, 0x4(r30)
-    sth r0, 0x4(r30)
-    stw r0, 0x4(r30)
-    std r0, 0x4(r30)
-    stbx r0, r30, r1
-    sthx r0, r30, r1
-    stwx r0, r30, r1
-    stdx r0, r30, r1
-    stbu r0, 0x4(r30)
-    sthu r0, 0x4(r30)
-    stwu r0, 0x4(r30)
-    stdu r0, 0x4(r30)
-    stbux r0, r30, r1
-    sthux r0, r30, r1
-    stwux r0, r30, r1
-    stdux r0, r30, r1
-    stbcix r0, r30, r1
-    sthcix r0, r30, r1
-    stwcix r0, r30, r1
-    stdcix r0, r30, r1
+    stb r0, 0x4(r26)
+    sth r0, 0x4(r26)
+    stw r0, 0x4(r26)
+    std r0, 0x4(r26)
+    stbx r0, r26, r1
+    sthx r0, r26, r1
+    stwx r0, r26, r1
+    stdx r0, r26, r1
+    stbu r0, 0x4(r26)
+    sthu r0, 0x4(r26)
+    stwu r0, 0x4(r26)
+    stdu r0, 0x4(r26)
+    stbux r0, r26, r1
+    sthux r0, r26, r1
+    stwux r0, r26, r1
+    stdux r0, r26, r1
+    stbcix r0, r26, r1
+    sthcix r0, r26, r1
+    stwcix r0, r26, r1
+    stdcix r0, r26, r1
     ### STORES END
 
     ### LOADS BEGIN
     # Set load playground
-    # lis r30, store_b@ha
-    # la r30, store_b@l(r30)
+    # lis r26, store_b@ha
+    # la r26, store_b@l(r26)
     li r0, 1
     lis r0, 1
-    la r0, 0x8(r30)
-    lbz r0, 0x4(r30)
-    lbzx r0, r30, r1
-    lbzu r0, 0x8(r30)
-    lbzux r0, r30, r1
-    lbzcix r0, r30, r1
-    lha r0, 0x4(r30)
-    lhz r0, 0x4(r30)
-    lhzx r0, r30, r1
-    lhzu r0, 0x8(r30)
-    lhzux r0, r30, r1
-    lhax r0, r30, r1
-    lhaux r0, r30, r1
-    lhzcix r0, r30, r1
-    lwa r0, 0x4(r30)
-    lwz r0, 0x4(r30)
-    lwzx r0, r30, r1
-    lwax r0, r30, r1
-    lwaux r0, r30, r1
-    lwzcix r0, r30, r1
-    ld  r0, 0x4(r30)
-    ldx  r0, r30, r1
-    ldu r0, 0x4(r30)
-    ldux r0, r30, r1
-    ldcix r0, r30, r1
-    lhbrx r0, r30, r1
-    lwbrx r0, r30, r1
-    ldbrx r0, r30, r1
+    la r0, 0x8(r26)
+    lbz r0, 0x4(r26)
+    lbzx r0, r26, r1
+    lbzu r0, 0x8(r26)
+    lbzux r0, r26, r1
+    lbzcix r0, r26, r1
+    lha r0, 0x4(r26)
+    lhz r0, 0x4(r26)
+    lhzx r0, r26, r1
+    lhzu r0, 0x8(r26)
+    lhzux r0, r26, r1
+    lhax r0, r26, r1
+    lhaux r0, r26, r1
+    lhzcix r0, r26, r1
+    lwa r0, 0x4(r26)
+    lwz r0, 0x4(r26)
+    lwzx r0, r26, r1
+    lwax r0, r26, r1
+    lwaux r0, r26, r1
+    lwzcix r0, r26, r1
+    ld  r0, 0x4(r26)
+    ldx  r0, r26, r1
+    ldu r0, 0x4(r26)
+    ldux r0, r26, r1
+    ldcix r0, r26, r1
+    lhbrx r0, r26, r1
+    lwbrx r0, r26, r1
+    ldbrx r0, r26, r1
     ### LOADS END
 
     # fill random data
@@ -98,22 +98,22 @@ asm_collection:
     and r0, r1, r2
     andc r0, r1, r2
     andi. r0, r2, 0x4
-    andis. r30, r0, 0x4
+    andis. r26, r0, 0x4
     mr r5, r20
 
     # fill random data
     # mtctr r0
     # bctrl
-    or r0, r30, r1
+    or r0, r26, r1
     orc r0, r1, r2
-    ori r0, r30, 0x4
+    ori r0, r26, 0x4
     oris r0, r2, 0x4
 
     # fill random data
     # mtctr r0
     # bctrl
     xor r0, r1, r2
-    xori r0, r30, 0x4
+    xori r0, r26, 0x4
     xoris r0, r2, 0x4
 
     # fill random data
