@@ -17,8 +17,7 @@ asm_collection:
     mflr r30
 
     # fill random data
-    lis r4, random_data_1@ha
-    la r4, random_data_1@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     addi  r0, r26, 0x4
@@ -67,8 +66,7 @@ asm_collection:
 
     ### LOADS BEGIN
     # Set load playground
-    lis r26, random_data_0@ha
-    la r26, random_data_0@l(r26)
+    mr r26, r29
     li r1, 48
     li r0, 1
     lis r0, 1
@@ -103,8 +101,7 @@ asm_collection:
     ### LOADS END
 
     # fill random data
-    lis r4, random_data_2@ha
-    la r4, random_data_2@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     and r0, r1, r2
@@ -114,8 +111,7 @@ asm_collection:
     mr r5, r20
 
     # fill random data
-    lis r4, random_data_3@ha
-    la r4, random_data_3@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     or r0, r26, r1
@@ -124,8 +120,7 @@ asm_collection:
     oris r0, r2, 0x4
 
     # fill random data
-    lis r4, random_data_0@ha
-    la r4, random_data_0@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     xor r0, r1, r2
@@ -133,24 +128,21 @@ asm_collection:
     xoris r0, r2, 0x4
 
     # fill random data
-    lis r4, random_data_1@ha
-    la r4, random_data_1@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     nand r0, r1, r2
     nor r0, r1, r2
 
     # fill random data
-    lis r4, random_data_2@ha
-    la r4, random_data_2@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     cmpb 0, r0, r1
     eqv r0, r1, r6
 
     # fill random data
-    lis r4, random_data_3@ha
-    la r4, random_data_3@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     extsb r0, r4
@@ -158,16 +150,14 @@ asm_collection:
     extsw r0, r4
 
     # fill random data
-    lis r4, random_data_0@ha
-    la r4, random_data_0@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     cntlzd r0, r1
     cntlzd r0, r1
 
     # fill random data
-    lis r4, random_data_1@ha
-    la r4, random_data_1@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     cmpw 3, r0, r1
@@ -228,8 +218,7 @@ asm_collection:
     ### BRANCH END
 
     # fill random data
-    lis r4, random_data_2@ha
-    la r4, random_data_2@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     nop
@@ -292,8 +281,7 @@ asm_collection:
     # mtibatl 3, 4
 
     # fill random data
-    lis r4, random_data_1@ha
-    la r4, random_data_1@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     sld r10, r20, r4
@@ -302,9 +290,10 @@ asm_collection:
     srw r10, r20, r4
     srad r10, r20, r4
     sradi r10, r20, 4
-    lis r22, random_data_0@ha
-    la r22, random_data_0@l(r22)
-    ld r22, 0x0(r22)
+
+    mr r4, r29
+    bl fill_regs_with_data
+
     sraw r10, r22, r4
     srawi r10, r22, 4
     slwi r10, r20, 16
@@ -312,8 +301,7 @@ asm_collection:
     # sldi r10, r20, 16 # Broken in rizins capstone version
 
     # fill random data
-    lis r4, random_data_3@ha
-    la r4, random_data_3@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     rlwimi r10, r20, 8, 5, 5
@@ -332,8 +320,7 @@ asm_collection:
     rotldi r10, r20, 4
 
     # fill random data
-    lis r4, random_data_3@ha
-    la r4, random_data_3@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     divd r4, r6, r7
@@ -349,8 +336,7 @@ asm_collection:
     mullw r4, r6, r7
 
     # fill random data
-    lis r4, random_data_1@ha
-    la r4, random_data_1@l(r4)
+    mr r4, r29
     bl fill_regs_with_data
 
     creqv 15, 4, 7
@@ -374,6 +360,20 @@ pseudo_fuzz:
     mflr r3
     bl store_regs
 
+    lis r29, random_data_0@ha
+    la r29, random_data_0@l(r29)
+    bl asm_collection
+
+    lis r29, random_data_1@ha
+    la r29, random_data_1@l(r29)
+    bl asm_collection
+
+    lis r29, random_data_2@ha
+    la r29, random_data_2@l(r29)
+    bl asm_collection
+
+    lis r29, random_data_3@ha
+    la r29, random_data_3@l(r29)
     bl asm_collection
 
     bl load_regs

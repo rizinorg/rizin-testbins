@@ -247,8 +247,7 @@ fill_regs_with_data:
     ld r26, 0x180(r4)
     ld r27, 0x190(r4)
     ld r28, 0x1a0(r4)
-    ld r29, 0x1b0(r4)
-    # r30 and r31 stay untouched.
+    # r29, r30 and r31 stay untouched.
     addi r5, r4, 0x1c0
     mtcr r5
 
