@@ -132,6 +132,8 @@ special_insns:
     mtcrf 0x4, r4
     isel r10, 0, r23, 14
     isel r10, 0, r23, 0
+    # Single dcbz instructions lead to segaults.
+    # But they are executed before main is reached so it is fine to ignore them here.
 
     blr
 
