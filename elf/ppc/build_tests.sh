@@ -16,3 +16,8 @@ $(powerpc64le-linux-gnu-gcc -Ttext 0x100000 -static -Wa,-mregnames ppc_main.c pp
 
 printf "Build 32bit be test binary\n\n"
 $(powerpc-linux-gnu-gcc -Ttext 0x100000 -static -m32 -Wa,-mregnames ppc_main.c ppc32.S -o "$CWD"/ppc32be_uplifted)
+echo "* emulateme-ppc32le"
+powerpcle-linux-musl-gcc -Ttext 0x100000 -Wl,-no-pie -static ../../src/ppc-rzil/emulateme.c -o "$CWD"/emulateme-ppc32le
+
+echo "* emulateme-ppc32be"
+powerpc-linux-musl-gcc -Ttext 0x100000 -Wl,-no-pie -static ../../src/ppc-rzil/emulateme.c -o "$CWD"/emulateme-ppc32be
