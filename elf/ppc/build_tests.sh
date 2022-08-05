@@ -21,3 +21,9 @@ powerpcle-linux-musl-gcc -Ttext 0x100000 -Wl,-no-pie -static ../../src/ppc-rzil/
 
 echo "* emulateme-ppc32be"
 powerpc-linux-musl-gcc -Ttext 0x100000 -Wl,-no-pie -static ../../src/ppc-rzil/emulateme.c -o "$CWD"/emulateme-ppc32be
+
+echo "* emulateme-ppc64le"
+powerpc64le-linux-musl-gcc -Ttext 0x100000 -Wl,-no-pie -static ../../src/ppc-rzil/emulateme.c -o "$CWD"/emulateme-ppc64le
+
+echo "* emulateme-ppc64be"
+powerpc64-linux-musl-gcc -Ttext 0x100000 -Wl,-no-pie -static ../../src/ppc-rzil/emulateme.c -o "$CWD"/emulateme-ppc64be
