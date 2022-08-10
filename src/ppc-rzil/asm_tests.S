@@ -158,8 +158,9 @@ asm_collection:
 	ba 0x4
 	bcctr 4, 0
 	bcctrl 4, 0
+	bne cr5, 0
 	bc 4, 0, 0x4
-    bc 4, 1, 0x4
+	bc 4, 1, 0x4
 	bcl 4, 0, 0x4
 	bclr 4, 0
 	bclrl 4, 0
