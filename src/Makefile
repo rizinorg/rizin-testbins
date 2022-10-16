@@ -6,3 +6,8 @@ all:
 calculate-macos-arm64: ../mach0/calculate-macos-arm64
 ../mach0/calculate-macos-arm64: calculate.c
 	clang -O0 calculate.c -o ../mach0/calculate-macos-arm64
+
+.PHONY: mapper-macos-arm64
+mapper-macos-arm64: ../mach0/mapper-macos-arm64
+../mach0/mapper-macos-arm64: mapper.c
+	clang -O0 mapper.c -o ../mach0/mapper-macos-arm64
