@@ -11,3 +11,9 @@ calculate-macos-arm64: ../mach0/calculate-macos-arm64
 mapper-macos-arm64: ../mach0/mapper-macos-arm64
 ../mach0/mapper-macos-arm64: mapper.c
 	clang -O0 mapper.c -o ../mach0/mapper-macos-arm64
+
+../elf/vars-x86_64-bp: vars.c
+	gcc -fno-omit-frame-pointer -O0 -g -o $@ vars.c
+
+../elf/vars-x86_64-sp: vars.c
+	gcc -fomit-frame-pointer -O0 -g -o $@ vars.c
