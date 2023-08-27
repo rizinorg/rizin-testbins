@@ -16,7 +16,7 @@ bool fn1(int a, char *g, double q, struct Some *gg, some_t **out) {
 	if (!gg || !out) {
 		return false;
 	}
-	*out = malloc(sizeof(some_t));
+	*out = (some_t *)malloc(sizeof(some_t));
 	(*out)->a = a;
 	strncpy((*out)->b, g, 5);
 	(*out)->c = (float)q;
@@ -25,7 +25,7 @@ bool fn1(int a, char *g, double q, struct Some *gg, some_t **out) {
 }
 
 some_t *new_some() {
-	struct Some *n = malloc(sizeof(struct Some));
+	struct Some *n = (some_t *)malloc(sizeof(struct Some));
 	memset(n, 0, sizeof(*n));
 	return n;
 }
