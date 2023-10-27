@@ -1,7 +1,7 @@
 #!/bin/bash
 
-TIMEOUT_QEMU="30"
-TIMEOUT_RZTRACETEST="180"
+TIMEOUT_QEMU=30
+TIMEOUT_RZTRACETEST=180
 
 TEST_BINS=""
 for f in $(find . -executable | grep -o "test_.*" | sort); do
@@ -71,6 +71,8 @@ fi
 if [[ "$TEST_SET" == *"bigtrace"* ]]; then
    TEST_BINS="$TEST_BINS $BIGTRACE_TESTS"
 fi
+
+echo "$TEST_BINS"
 
 if [ "$TEST_BINS" == "" ]; then
    print_help_exit
