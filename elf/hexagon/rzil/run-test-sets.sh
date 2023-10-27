@@ -11,7 +11,7 @@ done
 ESSENTIAL_TESTS="$ESSENTIAL_TESTS usr v68_scalar v73_scalar test-vma load_align multi_result overflow first mem_noshuf preg_alias dual_stores mem_noshuf_exception read_write_overlap reg_mut misc"
 FLOAT_TESTS="fpstuff"
 # Produces traces of >1G. Some of the easily 100G in size
-BIGTRACE_TESTS="brev circ load_unpack scatter_gather sha1 sha512 float_convd float_convs float_madds"
+BIGTRACE_TESTS="sha1 sha512 brev circ load_unpack scatter_gather float_convd float_convs float_madds"
 
 run_test() {
    if [ "$2" == "NO_OUTPUT" ]; then
@@ -71,8 +71,6 @@ fi
 if [[ "$TEST_SET" == *"bigtrace"* ]]; then
    TEST_BINS="$TEST_BINS $BIGTRACE_TESTS"
 fi
-
-echo "$TEST_BINS"
 
 if [ "$TEST_BINS" == "" ]; then
    print_help_exit
