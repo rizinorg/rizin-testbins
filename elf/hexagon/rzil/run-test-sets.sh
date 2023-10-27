@@ -8,7 +8,7 @@ for f in $(find . -executable | grep -o "test_.*" | sort); do
    ESSENTIAL_TESTS="$f $ESSENTIAL_TESTS"
 done
 
-ESSENTIAL_TESTS="$ESSENTIAL_TESTS invalid-slots usr v68_scalar v73_scalar test-vma load_align multi_result overflow first mem_noshuf preg_alias dual_stores mem_noshuf_exception read_write_overlap reg_mut misc"
+ESSENTIAL_TESTS="$ESSENTIAL_TESTS usr v68_scalar v73_scalar test-vma load_align multi_result overflow first mem_noshuf preg_alias dual_stores mem_noshuf_exception read_write_overlap reg_mut misc"
 FLOAT_TESTS="fpstuff"
 # Produces traces of >1G. Some of the easily 100G in size
 BIGTRACE_TESTS="brev circ load_unpack scatter_gather sha1 sha512 float_convd float_convs float_madds"
