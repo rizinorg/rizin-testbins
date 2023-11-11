@@ -85,11 +85,11 @@ for f in ${TEST_BINS}; do
 
    RES=$(run_test "$f" "NO_OUTPUT")
    if [[ $(echo "$RES" | grep -E "success: .+ 100.00%") ]]; then
-      echo "[PASS]"
+      echo -e "[\e[1;36mPASS\e[0m]"
       continue
    fi
 
-   echo "[FAIL]"
+   echo -e "[\e[1;31mFAIL\e[0m]"
    if [ "$FAIL_ON_ERROR" == "-s" ]; then
       run_test "$f"
       exit 1
