@@ -33,7 +33,13 @@ print_help_exit() {
    echo "$0 -t [essentials,float,bigtrace] [-s]"
    echo "    -t    Comma separated list of test sets to run."
    echo "    -s    Fail and print error on first occurance."
+   echo "    -i    Pass also with unlifted."
    echo "    -q    Run Qemu for each file to generate new traces."
+   echo ""
+   echo "Results:"
+   echo -e "   \e[1;32mPASS\e[0m = All succeeded"
+   echo -e "   \e[1;36mPASS\e[0m = All succeeded some unlifted"
+   echo -e "   \e[1;31mFAIL\e[0m = At least one error."
    echo ""
    echo "Test sets:"
    echo "   essentials: Basic tests (scalar, branches, mem read/write etc.)."
@@ -51,9 +57,31 @@ print_help_exit() {
    exit 1
 }
 
+check_test_result() {
+   SUCCESS=$( echo "$*" | grep -Eo "success: [0-9]+ [0-9.]+%" | grep -Eo "[0-9.]+%")
+   SKIPPED=$( echo "$*" | grep -Eo "skipped: [0-9]+ [0-9.]+%" | grep -Eo "[0-9.]+%")
+   UNLIFTED=$( echo "$*" | grep -Eo "unlifted: [0-9]+ [0-9.]+%" | grep -Eo "[0-9.]+%")
+   INVALID=$( echo "$*" | grep -Eo "invalid il: [0-9]+ [0-9.]+%" | grep -Eo "[0-9.]+%")
+   RUNTIME=$( echo "$*" | grep -Eo "vm runtime error: [0-9]+ [0-9.]+%" | grep -Eo "[0-9.]+%")
+   MISEXEC=$( echo "$*" | grep -Eo "misexecuted: [0-9]+ [0-9.]+%" | grep -Eo "[0-9.]+%")
+
+   if [[ $(echo "$INVALID $RUNTIME $MISEXEC" | grep -Eo "[1-9]") ]]; then
+      # Signal failure
+      return 2
+   elif [[ $(echo "$UNLIFTED" | grep -Eo "[1-9]") ]]; then
+      # Signal unlifted
+      return 1
+   elif [[ $(echo "$SUCCESS" | grep -Eo "100\.00%") ]]; then
+      # Success
+      return 0
+   fi
+   return 5
+}
+
 PRINT_HELP=$( echo "$*" | grep -Eo "(\-h)|(--help)")
 FAIL_ON_ERROR=$( echo "$*" | grep -o "\-s")
 RUN_QEMU=$( echo "$*" | grep -o "\-q")
+IGNORE_UNLIFTED=$( echo "$*" | grep -o "\-i")
 TEST_SET=$( echo "$*" | grep -Eo "\-t [a-zA-Z,]+")
 
 if [ "$PRINT_HELP" == "-h" ] || [ "$PRINT_HELP" == "--help" ]; then
@@ -84,7 +112,12 @@ for f in ${TEST_BINS}; do
    fi
 
    RES=$(run_test "$f" "NO_OUTPUT")
-   if [[ $(echo "$RES" | grep -E "success: .+ 100.00%") ]]; then
+   check_test_result $RES
+   RES="$?"
+   if [ "$RES" == "0" ]; then
+      echo -e "[\e[1;32mPASS\e[0m]"
+      continue
+   elif [ "$RES" == "1" ] && [ "$IGNORE_UNLIFTED" == "-i" ]; then
       echo -e "[\e[1;36mPASS\e[0m]"
       continue
    fi
