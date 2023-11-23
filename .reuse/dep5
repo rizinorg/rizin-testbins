@@ -1,0 +1,18 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: rizin-testbins
+Upstream-Contact:  <core@rizin.re>
+Source: https://rizin.re/
+
+# Sample paragraph, commented out:
+#
+# Files: src/*
+# Copyright: $YEAR $NAME <$CONTACT>
+# License: ...
+
+Files: elf/hexagon/rzil/*
+Copyright: 2019-2023 Qualcomm Innovation Center, Inc.
+License: GPL-2.0-or-later
+
+Files: elf/hexagon/rzil/trace-test-all.sh
+Copyright: 2023 Rot127 <unisono@quyllur.org>
+License: LGPL-3.0-only
