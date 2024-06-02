@@ -1,29 +1,16 @@
 #include <stdio.h>
-#include <string.h>
-
-static char ress[6][128] = {0};
-
 
 int main(int argc, char **argv) {
-        float a = 3.;
-		float b = 38271.231;
-		float c = 0x2p64;
-		double res = 0;
-		res = a + b;
-        sprintf(ress[0], "%f + %f = %e\n", a, b, res);
-		res = a - b;
-        sprintf(ress[1], "%f - %f = %e\n", a, b, res);
-		res = a * b;
-        sprintf(ress[2], "%f * %f = %e\n", a, b, res);
-		res = a / b;
-        sprintf(ress[3], "%f / %f = %e\n", a, b, res);
-		res = a * b + c;
-        sprintf(ress[4], "%f * %f + %f = %e\n", a, b, c, res);
-		res = a * b - c;
-        sprintf(ress[5], "%f * %f - %f = %e\n", a, b, c, res);
+	float a = 3.;
+	float b = 38271.231;
+	float c = 321732.13;
+	float res_add = a + b;
+	float res_sub = a - b;
+	float res_m = a * b;
+	float res_d = a / b;
+	float res_madd = a * b + c;
+	float res_msub = a * b - c;
 
-		for(int i = 0; i<6; ++i){
-			printf("%s", ress[i]);
-		}
-        return 0;
+	printf("%f %f %f %f %f %f\n", res_add, res_sub, res_m, res_d, res_madd, res_msub);
+	return 0;
 }
