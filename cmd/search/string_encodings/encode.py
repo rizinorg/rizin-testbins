@@ -10,9 +10,9 @@ encodings = [
     ("utf_32_le", "utf32le"),
     ("cp037", "ibm037"),
     # Provided by ebcdic package
-    ("cp285", "ecbdic_uk"),
-    ("cp1140", "ecbdic_us"),
-    ("cp1145", "ecbdic_es"),
+    ("cp285", "ebcdic_uk"),
+    ("cp1140", "ebcdic_us"),
+    ("cp1145", "ebcdic_es"),
     ("cp290", "ibm290")
 ]
 
@@ -31,6 +31,9 @@ for file in Path(".").iterdir():
         to_enc = enc[1]
         new_file = f"{p.name.split(".")[0]}.{to_enc}"
         try:
+            if to_enc == "ibm290":
+                print("SKIP: IBM290 encoding is kinda broken. See: https://github.com/roskakori/CodecMapper/issues/19")
+                continue
             enc_content = content.encode(py_enc_id)
         except UnicodeEncodeError as e:
             if language == "Japanese" and to_enc == "ibm290":
