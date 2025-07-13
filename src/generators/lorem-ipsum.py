@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "faker",
+# ]
+# ///
+
 # -*- coding: utf-8 -*-
 
 # SPDX-FileCopyrightText: 2025 Rot127 <unisono@quyllur.org>
