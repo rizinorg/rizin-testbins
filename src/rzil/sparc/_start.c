@@ -5,7 +5,7 @@ extern void run_all_tests();
 
 int _start() {
     asm (
-        "call run_all_tests;nop"
-    );    
+        "call run_all_tests; nop"
+    );
     return 0;
 }
