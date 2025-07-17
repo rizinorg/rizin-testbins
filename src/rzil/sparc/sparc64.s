@@ -5,10 +5,76 @@
 .include "sparc_helper.data.S"
 
 .section ".rodata"
-.include "sparc_helper.rodata.S"
+
+.align 4
+random_data_0:
+    .xword 0x682c5f5d709b6285
+    .xword 0x32aa9fb6ae96b088
+    .xword 0x21d217428b54dc66
+    .xword 0x59cf8853dddd117f
+    .xword 0x78005d7e1b6adfa1
+    .xword 0x5b5140d109107291
+    .xword 0x7f06d817d0f2abd4
+    .xword 0x79ec5b2b34bcbd40
+    .xword 0x6e3e2aaff4eebbba
+    .xword 0x7c07325b59c673be
+    .xword 0x2144e5119f930b25
+    .xword 0x319914cc70f34212
+    .xword 0x782490386d9ffb09
+    .xword 0xfb1215eccfd0b56
+    .xword 0x2858b12a39388021
+    .xword 0x1202b141ae83bfbe
+    .xword 0x2f699354061447e9
+    .xword 0x6b146cfe3a992b09
+    .xword 0x1fef656f47f1578f
+    .xword 0x77b09980fca87ef1
+    .xword 0x746258c749423f07
+    .xword 0x128ee6ee1ce7324a
+    .xword 0x54da4cfa7faf7000
+    .xword 0x4ce12cd84a109754
+    .xword 0x30b7ee244b14ec74
+    .xword 0x4c86b4723e95182f
+    .xword 0x76a485f2afddec0a
+    .xword 0x6f95e7854453d073
+    .xword 0x5fbcafe53dad42
+    .xword 0x7b4c17ee1e2703cd
+    .xword 0x475e1268be6010d9
+    .xword 0x3c64c7bd1ee3a5c7
+    .xword 0x21d1ff163d56f0b8
+    .xword 0x1e56369f72b73679
+    .xword 0x5b5e2c0579710b6a
+    .xword 0x535d42dc8ddef036
+    .xword 0x52f384d9827fe566
+    .xword 0x335b2cb337660656
+    .xword 0x7befd0b35f0eecab
+    .xword 0x15749ab8acbc5331
+    .xword 0x27031376b67a6fc4
+    .xword 0x774652cd9557194
+    .xword 0x4be4589a8eed797a
+    .xword 0x1d5c123d79ac8c9b
+    .xword 0x7998da36c430ed74
+    .xword 0x436a7db33eb16149
+    .xword 0x138fc986117f17a3
+    .xword 0x2fe76ba34a90dba
+    .xword 0x6fe4a0ec7c5d3e14
+    .xword 0x66ae5d1c6cd1371d
+    .xword 0x31da478921b93893
+    .xword 0x6f84d51486802e17
+    .xword 0x346ed21e68d2f170
+    .xword 0x6b62bf056286f491
+    .xword 0x307c0df183cb7ae7
+    .xword 0x3d1c019a4a13e9d3
+    .xword 0x1371035c2df0de5a
+    .xword 0xc94cfb7f073b088
+    .xword 0x687c6d6658cbba02
+    .xword 0x52261afa68fdaa80
+    .xword 0x56b71f5edfa68f7b
+    .xword 0x69b44b9edd796c8f
+    .xword 0x47286ccdbcffeded
+    .xword 0x143221efd07daca4
 
 
-.text
+.section ".text"
     .global run_all_tests
     .global add_insns
     # .global sub_insns
@@ -27,10 +93,286 @@
 
 run_all_tests:
 
-add_insns:
-    add %l0, 0x1, %l0
-    addcc %l0, -2, %l0
-    addx %l0, 0x1, %l0
+add_tests:
+    add %l0, 1, %l2
+    add %l2, 3, %l2
+
+random_data_tests:
+
+    set random_data_0, %l7
+
+    ld [%l7+0x1c], %l0
+    ld [%l7+0x20], %l1
+    ld [%l7+0x24], %l2
+    ld [%l7+0x28], %l3
+    ld [%l7+0x2c], %l4
+    ld [%l7+0x30], %l5
+    ld [%l7+0x34], %l6
+
+llvm_asm_test_insn:
+    add %l0, %l0, %l0
+    add %l1, %l2, %l3
+    add %l0, %l1, %l0
+    add %l0, 10, %l0
+    addcc %l1, %l2, %l3
+    addxcc %l1, %l2, %l3
+    udiv %l1, %l2, %l3
+    sdiv %l2, %l3, %l4
+    and %l2, %l3, %l4
+    andn %l2, %l3, %l4
+    or %l2, %l3, %l4
+    orn %l2, %l3, %l4
+    xor %l2, %l3, %l4
+    xnor %l2, %l3, %l4
+    umul %l2, %l3, %l4
+    smul %l2, %l3, %l4
+    nop 
+    sethi 10, %l0
+    sll %l1, %l2, %l3
+    sll %l1, 31, %l3
+    srl %l1, %l2, %l3
+    srl %l1, 31, %l3
+    sra %l1, %l2, %l3
+    sra %l1, 31, %l3
+    sub %l1, %l2, %l3
+    subcc %l1, %l2, %l3
+    subxcc %l1, %l2, %l3
+    mov %l1, %l2
+    mov 0xff, %l3
+    addx %l1, %l2, %l3
+    subx %l1, %l2, %l3
+    umulcc %l1, %l2, %l3
+    smulcc %l1, %l2, %l3
+    udivcc %l1, %l2, %l3
+    sdivcc %l1, %l2, %l3
+    andcc %l1, %l2, %l3
+    andncc %l1, %l2, %l3
+    orcc %l1, %l2, %l3
+    orncc %l1, %l2, %l3
+    xorcc %l1, %l2, %l3
+    xnorcc %l1, %l2, %l3
+
+    # save
+    # restore 
+    # taddcc %g2, %g1, %g3
+    # tsubcc %g2, %g1, %g3
+    # taddcctv %g2, %g1, %g3
+    # tsubcctv %g2, %g1, %g3
+    # membar 15
+    # stbar 
+    # call %g1+%i2
+    # call %o1+8
+    # call %g1
+    # jmp %g1+%i2
+    # jmp %o1+8
+    # jmp %g1
+    # jmpl %g1+%i2, %g2
+    # jmpl %o1+8, %g2
+    # jmpl %g1, %g2
+    # rett %i7+8
+    fitos %f0, %f4
+    fitod %f0, %f4
+    fitoq %f0, %f4
+    fstoi %f0, %f4
+    fdtoi %f0, %f4
+    fqtoi %f0, %f4
+    fstod %f0, %f4
+    fstoq %f0, %f4
+    fdtos %f0, %f4
+    fdtoq %f0, %f4
+    fqtos %f0, %f4
+    fqtod %f0, %f4
+    fmovs %f0, %f4
+    fmovd %f0, %f4
+    fmovq %f0, %f4
+    fnegs %f0, %f4
+    fnegd %f0, %f4
+    fnegq %f0, %f4
+    fabss %f0, %f4
+    fabsd %f0, %f4
+    fabsq %f0, %f4
+    fsqrts %f0, %f4
+    fsqrtd %f0, %f4
+    fsqrtq %f0, %f4
+    fadds %f0, %f4, %f8
+    faddd %f0, %f4, %f8
+    faddq %f0, %f4, %f8
+    faddd %f32, %f34, %f62
+    faddq %f32, %f36, %f60
+    fsubs %f0, %f4, %f8
+    fsubd %f0, %f4, %f8
+    fsubq %f0, %f4, %f8
+    fmuls %f0, %f4, %f8
+    fmuld %f0, %f4, %f8
+    fmulq %f0, %f4, %f8
+    fsmuld %f0, %f4, %f8
+    fdmulq %f0, %f4, %f8
+    fdivs %f0, %f4, %f8
+    fdivd %f0, %f4, %f8
+    fdivq %f0, %f4, %f8
+    fcmps %fcc2, %f0, %f4
+    fcmpd %fcc2, %f0, %f4
+    fcmpq %fcc2, %f0, %f4
+    fcmpes %fcc2, %f0, %f4
+    fcmped %fcc2, %f0, %f4
+    fcmpeq %fcc2, %f0, %f4
+    fxtos %f0, %f4
+    fxtod %f0, %f4
+    fxtoq %f0, %f4
+    fstox %f0, %f4
+    fdtox %f0, %f4
+    fqtox %f0, %f4
+
+    fzeros %f31
+    sllx %l1, %l2, %l0
+    sllx %l1, 63, %l0
+    srlx %l1, %l2, %l0
+    srlx %l1, 63, %l0
+    srax %l1, %l2, %l0
+    srax %l1, 63, %l0
+    mulx %l1, %l2, %l0
+    mulx %l1, 63, %l0
+    sdivx %l1, %l2, %l0
+    sdivx %l1, 63, %l0
+    udivx %l1, %l2, %l0
+    udivx %l1, 63, %l0
+    movne %icc, %l1, %l2
+    move %icc, %l1, %l2
+    movg %icc, %l1, %l2
+    movle %icc, %l1, %l2
+    movge %icc, %l1, %l2
+    movl %icc, %l1, %l2
+    movgu %icc, %l1, %l2
+    movleu %icc, %l1, %l2
+    movcc %icc, %l1, %l2
+    movcs %icc, %l1, %l2
+    movpos %icc, %l1, %l2
+    movneg %icc, %l1, %l2
+    movvc %icc, %l1, %l2
+    movvs %icc, %l1, %l2
+    movne %xcc, %l1, %l2
+    move %xcc, %l1, %l2
+    movg %xcc, %l1, %l2
+    movle %xcc, %l1, %l2
+    movge %xcc, %l1, %l2
+    movl %xcc, %l1, %l2
+    movgu %xcc, %l1, %l2
+    movleu %xcc, %l1, %l2
+    movcc %xcc, %l1, %l2
+    movcs %xcc, %l1, %l2
+    movpos %xcc, %l1, %l2
+    movneg %xcc, %l1, %l2
+    movvc %xcc, %l1, %l2
+    movvs %xcc, %l1, %l2
+    movu %fcc0, %l1, %l2
+    movg %fcc0, %l1, %l2
+    movug %fcc0, %l1, %l2
+    movl %fcc0, %l1, %l2
+    movul %fcc0, %l1, %l2
+    movlg %fcc0, %l1, %l2
+    movne %fcc0, %l1, %l2
+    move %fcc0, %l1, %l2
+    movue %fcc0, %l1, %l2
+    movge %fcc0, %l1, %l2
+    movuge %fcc0, %l1, %l2
+    movle %fcc0, %l1, %l2
+    movule %fcc0, %l1, %l2
+    movo %fcc0, %l1, %l2
+    fmovsne %icc, %f1, %f2
+    fmovse %icc, %f1, %f2
+    fmovsg %icc, %f1, %f2
+    fmovsle %icc, %f1, %f2
+    fmovsge %icc, %f1, %f2
+    fmovsl %icc, %f1, %f2
+    fmovsgu %icc, %f1, %f2
+    fmovsleu %icc, %f1, %f2
+    fmovscc %icc, %f1, %f2
+    fmovscs %icc, %f1, %f2
+    fmovspos %icc, %f1, %f2
+    fmovsneg %icc, %f1, %f2
+    fmovsvc %icc, %f1, %f2
+    fmovsvs %icc, %f1, %f2
+    fmovsne %xcc, %f1, %f2
+    fmovse %xcc, %f1, %f2
+    fmovsg %xcc, %f1, %f2
+    fmovsle %xcc, %f1, %f2
+    fmovsge %xcc, %f1, %f2
+    fmovsl %xcc, %f1, %f2
+    fmovsgu %xcc, %f1, %f2
+    fmovsleu %xcc, %f1, %f2
+    fmovscc %xcc, %f1, %f2
+    fmovscs %xcc, %f1, %f2
+    fmovspos %xcc, %f1, %f2
+    fmovsneg %xcc, %f1, %f2
+    fmovsvc %xcc, %f1, %f2
+    fmovsvs %xcc, %f1, %f2
+    fmovsu %fcc0, %f1, %f2
+    fmovsg %fcc0, %f1, %f2
+    fmovsug %fcc0, %f1, %f2
+    fmovsl %fcc0, %f1, %f2
+    fmovsul %fcc0, %f1, %f2
+    fmovslg %fcc0, %f1, %f2
+    fmovsne %fcc0, %f1, %f2
+    fmovse %fcc0, %f1, %f2
+    fmovsue %fcc0, %f1, %f2
+    fmovsge %fcc0, %f1, %f2
+    fmovsuge %fcc0, %f1, %f2
+    fmovsle %fcc0, %f1, %f2
+    fmovsule %fcc0, %f1, %f2
+    fmovso %fcc0, %f1, %f2
+    movu %fcc1, %l1, %l2
+    fmovsg %fcc2, %f1, %f2
+    movrz %l1, %l2, %l3
+    movrlez %l1, %l2, %l3
+    movrlz %l1, %l2, %l3
+    movrnz %l1, %l2, %l3
+    movrgz %l1, %l2, %l3
+    movrgez %l1, %l2, %l3
+    fmovrsz %l1, %f2, %f3
+    fmovrslez %l1, %f2, %f3
+    fmovrslz %l1, %f2, %f3
+    fmovrsnz %l1, %f2, %f3
+    fmovrsgz %l1, %f2, %f3
+    fmovrsgez %l1, %f2, %f3
+    # te %xcc, %g0 + 3
+    fcmps %f0, %f4
+    fcmpd %f32, %f34
+    fcmpq %f32, %f40
+    fcmpes %f0, %f4
+    fcmped %f58, %f60
+    fcmpeq %f40, %f48
+
+    # Memory instructions
+
+    # ldsb [%i0+%l6], %o2
+    # ldsb [%i0+32], %o2
+    # ldsb [%g1], %o4
+    # ldsh [%i0+%l6], %o2
+    # ldsh [%i0+32], %o2
+    # ldsh [%g1], %o4
+    # ldub [%i0+%l6], %o2
+    # ldub [%i0+32], %o2
+    # ldub [%g1], %o2
+    # lduh [%i0+%l6], %o2
+    # lduh [%i0+32], %o2
+    # lduh [%g1], %o2
+    # ld [%i0+%l6], %o2
+    # ld [%i0+32], %o2
+    # ld [%g1], %o2
+    # stb %o2, [%i0+%l6]
+    # stb %o2, [%i0+32]
+    # stb %o2, [%g1]
+    # sth %o2, [%i0+%l6]
+    # sth %o2, [%i0+32]
+    # sth %o2, [%g1]
+    # st %o2, [%i0+%l6]
+    # st %o2, [%i0+32]
+    # st %o2, [%g1]
+
+    # swap [%i0+%l6], %o2
+    # swap [%i0+32], %o2
+    # cas [%i0], %l6, %o2
+    # casx [%i0], %l6, %o2
 
 done:
-    return %i7+8
+    ret
