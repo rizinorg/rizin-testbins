@@ -2,7 +2,38 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 
 .section ".data"
-.include "sparc_helper.data.S"
+
+.align 4
+store_b:
+    .byte 0
+.align 4
+store_h:
+    .hword 0
+.align 4
+store_w:
+    .long 0
+.align 4
+store_d:
+    .xword 0
+store_q:
+    .xword 0
+    .xword 0
+.align 4
+load_b:
+    .byte 0xff
+.align 4
+load_h:
+    .hword 0xffff
+.align 4
+load_w:
+    .long 0xffffffff
+.align 4
+load_d:
+    .xword 0xffffffffffffffff
+.align 4
+load_q:
+    .xword 0xffffffffffffffff
+    .xword 0xffffffffffffffff
 
 .section ".rodata"
 
@@ -342,32 +373,92 @@ llvm_asm_test_insn:
     fcmped %f58, %f60
     fcmpeq %f40, %f48
 
-    # Memory instructions
+memory_tests:
 
-    # ldsb [%i0+%l6], %o2
-    # ldsb [%i0+32], %o2
-    # ldsb [%g1], %o4
-    # ldsh [%i0+%l6], %o2
-    # ldsh [%i0+32], %o2
-    # ldsh [%g1], %o4
-    # ldub [%i0+%l6], %o2
-    # ldub [%i0+32], %o2
-    # ldub [%g1], %o2
-    # lduh [%i0+%l6], %o2
-    # lduh [%i0+32], %o2
-    # lduh [%g1], %o2
-    # ld [%i0+%l6], %o2
-    # ld [%i0+32], %o2
-    # ld [%g1], %o2
-    # stb %o2, [%i0+%l6]
-    # stb %o2, [%i0+32]
-    # stb %o2, [%g1]
-    # sth %o2, [%i0+%l6]
-    # sth %o2, [%i0+32]
-    # sth %o2, [%g1]
-    # st %o2, [%i0+%l6]
-    # st %o2, [%i0+32]
-    # st %o2, [%g1]
+    set load_b, %l0
+    set load_h, %l1
+    set load_w, %l2
+    set load_d, %l3
+    set load_q, %l4
+
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    set store_b, %l5
+
+    ldsb [%l0+%g0], %o0
+    ldsb [%l0+0], %o1
+    ldsb [%l0], %o2
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    ldub [%l0+%g0], %o0
+    ldub [%l0+0], %o1
+    ldub [%l0], %o2
+    stb %o0, [%l5+%g0]
+    stb %o1, [%l5+0]
+    stb %o2, [%l5]
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    set store_h, %l5
+
+    ldsh [%l1+%g0], %o0
+    ldsh [%l1+0], %o1
+    ldsh [%l1], %o2
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    lduh [%l1+%g0], %o0
+    lduh [%l1+0], %o1
+    lduh [%l1], %o2
+    sth %o0, [%l5+%g0]
+    sth %o1, [%l5+0]
+    sth %o2, [%l5]
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    set store_w, %l5
+
+    ldsw [%l2+%g0], %o0
+    ldsw [%l2+0], %o1
+    ldsw [%l2], %o2
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    lduw [%l2+%g0], %o0
+    lduw [%l2+0], %o1
+    lduw [%l2], %o2
+    stw %o0, [%l5+%g0]
+    stw %o1, [%l5+0]
+    stw %o2, [%l5]
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    set store_d, %l5
+
+    ld [%l3+%g0], %o0
+    ld [%l3+0], %o1
+    ld [%l3], %o2
+    std %o0, [%l5+%g0]
+    std %o1, [%l5+0]
+    std %o2, [%l5]
+    xor %g0, %g0, %o0
+    xor %g0, %g0, %o1
+    xor %g0, %g0, %o2
+
+    set store_q, %l5
+
+    ldq [%l4+%g0], %f0
+    ldq [%l4+0], %f0
+    ldq [%l4], %f0
 
     # swap [%i0+%l6], %o2
     # swap [%i0+32], %o2
