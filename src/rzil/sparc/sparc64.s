@@ -3,41 +3,86 @@
 
 .section ".data"
 
-.align 4
+.align 16
 store_b:
     .byte 0
-.align 4
+    .byte 0
+    .byte 0
+.align 16
 store_h:
     .hword 0
-.align 4
+    .hword 0
+    .hword 0
+.align 16
 store_w:
     .long 0
-.align 4
+    .long 0
+    .long 0
+.align 16
 store_d:
     .xword 0
+    .xword 0
+    .xword 0
+.align 64
 store_q:
     .xword 0
     .xword 0
-.align 4
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+    .xword 0
+.align 16
 load_b:
     .byte 0xff
-.align 4
+    .byte 0xee
+    .byte 0xdd
+.align 16
 load_h:
     .hword 0xffff
-.align 4
+    .hword 0xeeee
+    .hword 0xdddd
+.align 16
 load_w:
     .long 0xffffffff
-.align 4
+    .long 0xeeeeeeee
+    .long 0xdddddddd
+.align 16
 load_d:
     .xword 0xffffffffffffffff
-.align 4
+    .xword 0xeeeeeeeeeeeeeeee
+    .xword 0xdddddddddddddddd
+.align 16
 load_q:
     .xword 0xffffffffffffffff
     .xword 0xffffffffffffffff
+    .xword 0xeeeeeeeeeeeeeeee
+    .xword 0xeeeeeeeeeeeeeeee
+    .xword 0xdddddddddddddddd
+    .xword 0xdddddddddddddddd
 
 .section ".rodata"
 
-.align 4
+.align 16
 random_data_0:
     .xword 0x682c5f5d709b6285
     .xword 0x32aa9fb6ae96b088
@@ -105,6 +150,7 @@ random_data_0:
     .xword 0x143221efd07daca4
 
 
+.align 16
 .section ".text"
     .global run_all_tests
     .global add_insns
@@ -375,90 +421,105 @@ llvm_asm_test_insn:
 
 memory_tests:
 
-    set load_b, %l0
-    set load_h, %l1
-    set load_w, %l2
-    set load_d, %l3
-    set load_q, %l4
 
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
+    set load_b, %l0
     set store_b, %l5
 
     ldsb [%l0+%g0], %o0
-    ldsb [%l0+0], %o1
-    ldsb [%l0], %o2
+    ldsb [%l0+1], %o1
+    ldsb [%l0+2], %o2
+    stb %o0, [%l5+%g0]
+    stb %o1, [%l5+2]
+    stb %o2, [%l5+2]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
     ldub [%l0+%g0], %o0
-    ldub [%l0+0], %o1
-    ldub [%l0], %o2
+    ldub [%l0+1], %o1
+    ldub [%l0+2], %o2
     stb %o0, [%l5+%g0]
-    stb %o1, [%l5+0]
-    stb %o2, [%l5]
+    stb %o1, [%l5+2]
+    stb %o2, [%l5+2]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
+    set load_h, %l1
     set store_h, %l5
 
     ldsh [%l1+%g0], %o0
-    ldsh [%l1+0], %o1
-    ldsh [%l1], %o2
+    ldsh [%l1+2], %o1
+    ldsh [%l1+4], %o2
+    sth %o0, [%l5+%g0]
+    sth %o1, [%l5+2]
+    sth %o2, [%l5+4]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
     lduh [%l1+%g0], %o0
-    lduh [%l1+0], %o1
-    lduh [%l1], %o2
+    lduh [%l1+2], %o1
+    lduh [%l1+4], %o2
     sth %o0, [%l5+%g0]
-    sth %o1, [%l5+0]
-    sth %o2, [%l5]
+    sth %o1, [%l5+2]
+    sth %o2, [%l5+4]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
+    set load_w, %l2
     set store_w, %l5
 
     ldsw [%l2+%g0], %o0
-    ldsw [%l2+0], %o1
-    ldsw [%l2], %o2
+    ldsw [%l2+4], %o1
+    ldsw [%l2+8], %o2
+    stw %o0, [%l5+%g0]
+    stw %o1, [%l5+4]
+    stw %o2, [%l5+8]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
     lduw [%l2+%g0], %o0
-    lduw [%l2+0], %o1
-    lduw [%l2], %o2
+    lduw [%l2+4], %o1
+    lduw [%l2+8], %o2
     stw %o0, [%l5+%g0]
-    stw %o1, [%l5+0]
-    stw %o2, [%l5]
+    stw %o1, [%l5+4]
+    stw %o2, [%l5+8]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
+    set load_d, %l3
     set store_d, %l5
 
+    ldx [%l3+%g0], %o0
+    ldx [%l3+8], %o2
+    ldx [%l3+16], %o4
     ld [%l3+%g0], %o0
-    ld [%l3+0], %o1
-    ld [%l3], %o2
+    ld [%l3+8], %o2
+    ld [%l3+16], %o4
     std %o0, [%l5+%g0]
-    std %o1, [%l5+0]
-    std %o2, [%l5]
+    std %o2, [%l5+8]
+    std %o4, [%l5+16]
     xor %g0, %g0, %o0
     xor %g0, %g0, %o1
     xor %g0, %g0, %o2
 
+    set load_q, %l4
     set store_q, %l5
 
     ldq [%l4+%g0], %f0
-    ldq [%l4+0], %f0
-    ldq [%l4], %f0
+    ldq [%l4+16], %f8
+    ldq [%l4+32], %f32
+    stq %f0, [%l5+%g0]
+    stq %f8, [%l5+64]
+    stq %f32, [%l5+128]
 
     # swap [%i0+%l6], %o2
     # swap [%i0+32], %o2
