@@ -568,6 +568,9 @@ memory_tests:
     ldx [%l3+%g0], %o0
     ldx [%l3+8], %o2
     ldx [%l3+16], %o4
+    st %o0, [%l5+%g0]
+    st %o2, [%l5+8]
+    st %o4, [%l5+16]
     ld [%l3+%g0], %o0
     ld [%l3+8], %o2
     ld [%l3+16], %o4
