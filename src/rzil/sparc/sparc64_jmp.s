@@ -58,7 +58,6 @@ ldx [%o0], %o3
 set load_one64, %o0
 ldx [%o0], %o0
 
-
 # Offset to next test
 set 0x18, %l1
 # Dividend. Divisor is in l6.
@@ -224,6 +223,134 @@ add %l0, %l1, %l0
 addcc %i3, %i0, %i4
 bvs %icc, check_branch
 set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+#
+# Annull bits
+#
+
+set 1, %l6
+# Offset to next test
+set 0x14, %l1
+
+# Branch Never
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+bn,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch not equal (not Z)
+rd %pc, %l0
+add %l0, %l1, %l0
+andcc %g0, %l1, %g0
+bne,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch equal (Z)
+rd %pc, %l0
+add %l0, %l1, %l0
+andcc %l1, %l1, %l1
+be,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater (not (Z or (N xor V)))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %i0
+bg,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less equal (Z or (N xor V))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %i0, %g0
+ble,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater equal (not (N xor V))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %i0
+bge,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less (N xor V)
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %i0, %g0
+bl,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater unsigned (not (C or Z))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %g0
+bgu,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less equal unsigned (C or Z)
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %i1, %g0
+bleu,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch carry clear (not C)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %i1, %i0, %i4
+bcc,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on carry (C)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %i0, %i0, %i4
+bcs,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on positive (not N)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %i1, %i1, %i4
+bpos,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on negative (N)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %i0, %i0, %i4
+bneg,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch overflow clear (not V)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %i3, %i0, %i4
+bvc,a %icc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch one overflow (V)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %i0, %i0, %i4
+bvs,a %icc, check_branch
 set 0, %l6
 udiv %l7, %l6, %l5
 
