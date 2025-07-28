@@ -227,7 +227,7 @@ set 0, %l6
 udiv %l7, %l6, %l5
 
 #
-# Annull bits
+# Annul bits
 #
 
 set 1, %l6
@@ -527,7 +527,7 @@ set 0, %l6
 udiv %l7, %l6, %l5
 
 #
-# 64bit Annull bits
+# 64bit Annul bits
 #
 
 set 1, %l6
@@ -651,6 +651,134 @@ rd %pc, %l0
 add %l0, %l1, %l0
 addcc %o0, %o0, %o4
 bvs,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Register conditional branches
+
+# Offset to next test
+set 0x18, %l1
+
+clr %i0
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brz %i0, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brlez %i0, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brlez %o1, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brlz %o1, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brnz %o1, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brgz %o3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brgez %o3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brgez %i0, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Annulled
+
+# Offset to next test
+set 0x14, %l1
+
+set 1, %l6
+
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brz,a %i1, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brlez,a %i3, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brlz,a %o3, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brnz,a %i0, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brgz,a %o1, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+brgez,a %o1, check_branch
 set 0, %l6
 udiv %l7, %l6, %l5
 
