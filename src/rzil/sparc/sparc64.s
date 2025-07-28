@@ -608,5 +608,120 @@ memory_tests:
     set 0x0, %l0
     casx [%l4], %l5, %l0
 
+    # Not implemented by QEMU
+    # set random_data_0, %l0
+    # ldx [%l0], %l1
+    # ldx [%l0+8], %l2
+    # ldx [%l0+16], %l3
+    # cmask8 %l1
+    # cmask16 %l2
+    # cmask32 %l3
+
+test_edge:
+
+    set 0x00, %l0
+    set 0x01, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x01, %l0
+    set 0x02, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x02, %l0
+    set 0x03, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x03, %l0
+    set 0x04, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x04, %l0
+    set 0x05, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x05, %l0
+    set 0x06, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x06, %l0
+    set 0x07, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x07, %l0
+    set 0x00, %l1
+    edge8 %l0, %l1, %l5
+    edge8l %l0, %l1, %l5
+    edge8ln %l0, %l1, %l5
+    edge8n %l0, %l1, %l5
+
+    set 0x00, %l0
+    set 0x02, %l1
+    edge16 %l0, %l1, %l5
+    edge16l %l0, %l1, %l5
+    edge16ln %l0, %l1, %l5
+    edge16n %l0, %l1, %l5
+
+    set 0x02, %l0
+    set 0x03, %l1
+    edge16 %l0, %l1, %l5
+    edge16l %l0, %l1, %l5
+    edge16ln %l0, %l1, %l5
+    edge16n %l0, %l1, %l5
+
+    set 0x03, %l0
+    set 0x00, %l1
+    edge16 %l0, %l1, %l5
+    edge16l %l0, %l1, %l5
+    edge16ln %l0, %l1, %l5
+    edge16n %l0, %l1, %l5
+
+    set 0x0f, %l0
+    set 0x0f, %l1
+    edge16 %l0, %l1, %l5
+    edge16l %l0, %l1, %l5
+    edge16ln %l0, %l1, %l5
+    edge16n %l0, %l1, %l5
+
+    set 0x00, %l0
+    set 0x04, %l1
+    edge32 %l0, %l1, %l5
+    edge32l %l0, %l1, %l5
+    edge32ln %l0, %l1, %l5
+    edge32n %l0, %l1, %l5
+
+    set 0x04, %l0
+    set 0x00, %l1
+    edge32 %l0, %l1, %l5
+    edge32l %l0, %l1, %l5
+    edge32ln %l0, %l1, %l5
+    edge32n %l0, %l1, %l5
+
+    set 0x0f, %l0
+    set 0x0f, %l1
+    edge32 %l0, %l1, %l5
+    edge32l %l0, %l1, %l5
+    edge32ln %l0, %l1, %l5
+    edge32n %l0, %l1, %l5
 done:
     ret
