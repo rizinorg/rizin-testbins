@@ -354,6 +354,306 @@ bvs,a %icc, check_branch
 set 0, %l6
 udiv %l7, %l6, %l5
 
+#
+# 64bit branches
+#
+
+# Offset to next test
+set 0x18, %l1
+# Dividend. Divisor is in l6.
+set 1, %l7
+
+# Set divisor which triggers exception
+set 0, %l6
+# Set address to next valid test
+rd %pc, %l0
+add %l0, %l1, %l0
+# Do comparison/Set icc bits
+wr %g0, 0, %ccr
+ba %xcc, check_branch
+set 1, %l6
+# Is only reached if branch was (incorrectly) not taken.
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch Never
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+wr %g0, 0, %ccr
+bn %xcc, check_branch
+set 1, %l6
+nop
+udiv %l7, %l6, %l5
+
+# Branch not equal (not Z)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+orcc %g0, %l1, %l1
+bne %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch equal (Z)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+andcc %g0, %l1, %g0
+be %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater (not (Z or (N xor V)))
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %o0, %g0
+bg %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less equal (Z or (N xor V))
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %g0
+ble %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater equal (not (N xor V))
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %g0
+bge %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less (N xor V)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %o1, %g0
+bl %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater unsigned (not (C or Z))
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %o0, %g0
+bgu %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less equal unsigned (C or Z)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %o0
+bleu %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch carry clear (not C)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o0, %o0, %o4
+bcc %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on carry (C)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o1, %o1, %o4
+bcs %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on positive (not N)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o0, %o0, %o4
+bpos %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on negative (N)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o1, %o1, %o4
+bneg %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch overflow clear (not V)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o0, %o0, %o4
+bvc %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch one overflow (V)
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o3, %o0, %o4
+bvs %xcc, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+#
+# 64bit Annull bits
+#
+
+set 1, %l6
+# Offset to next test
+set 0x14, %l1
+
+# Branch Never
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+bn,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch not equal (not Z)
+rd %pc, %l0
+add %l0, %l1, %l0
+andcc %g0, %l1, %g0
+bne,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch equal (Z)
+rd %pc, %l0
+add %l0, %l1, %l0
+andcc %l1, %l1, %l1
+be,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater (not (Z or (N xor V)))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %o0
+bg,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less equal (Z or (N xor V))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %o0, %g0
+ble,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater equal (not (N xor V))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %o0
+bge,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less (N xor V)
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %o0, %g0
+bl,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater unsigned (not (C or Z))
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %g0, %g0
+bgu,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less equal unsigned (C or Z)
+rd %pc, %l0
+add %l0, %l1, %l0
+cmp %o1, %g0
+bleu,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch carry clear (not C)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o1, %o0, %o4
+bcc,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on carry (C)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o0, %o0, %o4
+bcs,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on positive (not N)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o1, %o1, %o4
+bpos,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch on negative (N)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o0, %o0, %o4
+bneg,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch overflow clear (not V)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o3, %o0, %o4
+bvc,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch one overflow (V)
+rd %pc, %l0
+add %l0, %l1, %l0
+addcc %o0, %o0, %o4
+bvs,a %xcc, check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
 # Nop slide
 nop
 nop
