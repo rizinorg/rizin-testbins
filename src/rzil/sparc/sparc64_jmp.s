@@ -541,7 +541,7 @@ udiv %l7, %l6, %l5
 
 set 1, %l6
 # Offset to next test
-set 0x14, %l1
+set 0x10, %l1
 
 # Branch Never
 rd %pc, %l0
@@ -1076,7 +1076,126 @@ set 1, %l6
 set 0, %l6
 udiv %l7, %l6, %l5
 
+# Annulled tests
+
+set 1, %l6
+set 0x14, %l1
+
+# Branch never
+rd %pc, %l0
+add %l0, %l1, %l0
+nop
+fbn,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f1, %f1
+fbu,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f0
+fbg,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f0
+fbug,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f0
+fbl,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered and less
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f0
+fbul,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less or greater
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f0
+fblg,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch not equal
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f0
+fbne,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch equal
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f1, %f0
+fbe,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or equal
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f2, %f0
+fbue,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater or equal
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f0, %f1
+fbuge,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less or equal
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f1, %f0
+fble,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or less or equal
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f1, %f0
+fbule,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch ordered
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmps %f3, %f3
+fbo,a check_branch
+set 0, %l6
+udiv %l7, %l6, %l5
+
 # Nop slide
+nop
+nop
 nop
 nop
 nop
