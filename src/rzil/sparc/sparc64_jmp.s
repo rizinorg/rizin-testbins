@@ -1986,6 +1986,267 @@ set 1, %l6
 set 0, %l6
 udiv %l7, %l6, %l5
 
+set 0x18, %l1
+
+# Branch always
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fba %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch never
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbn %fcc3, check_branch
+set 1, %l6
+nop
+udiv %l7, %l6, %l5
+
+# Branch unordered
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f38, %f38
+fbu %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f34, %f32
+fbg %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f34, %f32
+fbug %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f38, %f38
+fbug %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f34
+fbl %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered and less
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f34
+fbul %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered and less
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f38, %f38
+fbul %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less or greater
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f34, %f32
+fblg %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less or greater
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f34
+fblg %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch not equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f36, %f32
+fbne %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbe %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f38, %f32
+fbue %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbue %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbge %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch greater or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f36
+fbge %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbuge %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f34, %f32
+fbuge %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or greater or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f34, %f38
+fbuge %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fble %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch less or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f34
+fble %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or less or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbule %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or less or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f34
+fbule %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch unordered or less or equal
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f38
+fbule %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
+
+# Branch ordered
+set 0, %l6
+rd %pc, %l0
+add %l0, %l1, %l0
+fcmpd %fcc3, %f32, %f32
+fbo %fcc3, check_branch
+set 1, %l6
+set 0, %l6
+udiv %l7, %l6, %l5
 
 # Nop slide
 nop
