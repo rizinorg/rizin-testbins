@@ -360,6 +360,14 @@ llvm_asm_test_insn:
     fcmpes %fcc2, %f0, %f4
     fcmped %fcc2, %f0, %f4
     fcmpeq %fcc2, %f0, %f4
+    # FCMP is further tests in sparc64_jmp.s
+    # Unsupported by QEMU:
+    # flcmpd %fcc1, %f32, %f32
+    # flcmpd %fcc1, %f34, %f32
+    # flcmpd %fcc1, %f32, %f34
+    # flcmpd %fcc1, %f38, %f34
+    # flcmpd %fcc1, %f32, %f38
+    # flcmpd %fcc1, %f38, %f38
     fxtos %f0, %f4
     fxtod %f0, %f4
     fxtoq %f0, %f4

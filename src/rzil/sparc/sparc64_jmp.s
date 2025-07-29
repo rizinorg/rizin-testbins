@@ -2254,6 +2254,24 @@ nop
 nop
 nop
 nop
+
+# Some compare instructions for tracing.
+fcmped %fcc1, %f32, %f32
+fcmped %fcc1, %f32, %f34
+fcmped %fcc1, %f34, %f32
+
+# There seems to be a QEMU bug if the
+# fcmpe instructions are not separated by nop.
+# QEMU seems to deadlock (or the trace plugin).
+# Might be related to tiny blocks, fcmpe or other reasons.
+nop
+nop
+nop
+
+fcmpes %fcc2, %f5, %f5
+fcmpes %fcc2, %f5, %f5
+fcmpes %fcc2, %f5, %f5
+
 nop
 nop
 nop
