@@ -520,7 +520,10 @@ test_edge:
     edge32ln %l0, %l1, %l5
     edge32n %l0, %l1, %l5
 
-    mulscc %l5, %l1, %l3
+    mulscc %l5, %l4, %l3
+    mulscc %l4, %l3, %l3
+    mulscc %l3, %l2, %l3
+    mulscc %l2, %l1, %l3
 
     # Unsupported by QEMU
     # umulxhi %l1, %l2, %l3
