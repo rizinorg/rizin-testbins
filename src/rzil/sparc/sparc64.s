@@ -519,5 +519,118 @@ test_edge:
     edge32l %l0, %l1, %l5
     edge32ln %l0, %l1, %l5
     edge32n %l0, %l1, %l5
+
+    mulscc %l5, %l1, %l3
+
+    # Unsupported by QEMU
+    # umulxhi %l1, %l2, %l3
+    # te %xcc, 0x10
+    # tle %icc, %i3
+    # wr %i0, %g1, %asr22
+    # wr %i0, %g1, %asr25
+
+    wr %i0, %g1, %y
+    wr %i0, %g1, %ccr
+    wr %i0, %g1, %asi
+    wr %i0, %g1, %fprs
+    wr %i0, %g1, %asr19
+
+    rd %y, %i0
+    rd %ccr, %i0
+    rd %asi, %i0
+    rd %fprs, %i0
+    rd %asr19, %i0
+
+    fone %f32
+    fones %f0
+    fzero %f32
+    fzeros %f0
+
+    set load_zero64, %o0
+    ld [%o0], %f0
+    ldd [%o0], %f16
+    ldq [%o0], %f32
+
+    set load_one32, %o0
+    ld [%o0], %f1
+    fitod %f1, %f18
+    fitoq %f1, %f36
+    fitos %f1, %f1
+
+    set load_two32, %o0
+    ld [%o0], %f2
+    fitod %f2, %f20
+    fitoq %f2, %f40
+    fitos %f2, %f2
+
+    set load_three32, %o0
+    ld [%o0], %f3
+    fitod %f3, %f22
+    fitoq %f3, %f44
+    fitos %f3, %f3
+
+    # NaN
+    fdivs %f0, %f0, %f4
+    fdivd %f16, %f16, %f24
+    fdivq %f32, %f32, %f48
+
+    fsqrtq %f40, %f8
+    fsqrtd %f20, %f8
+    fsqrts %f2, %f8
+
+    fsqrts %f3, %f9
+    fsqrtd %f22, %f10
+    fsqrtq %f44, %f56
+
+    fnot1 %f8, %f10
+    fsrc1 %f8, %f10
+    fnot2 %f8, %f10
+    fsrc2 %f8, %f10
+    fnot1s %f8, %f9
+    fsrc1s %f8, %f10
+    fnot2s %f8, %f9
+    fsrc2s %f8, %f10
+
+
+    fnand %f8, %f10, %f12
+    fnor %f8, %f10, %f12
+    fand %f8, %f10, %f12
+    fandnot1 %f8, %f10, %f12
+    fandnot2 %f8, %f10, %f12
+    fxnor %f8, %f10, %f12
+    fxor %f8, %f10, %f12
+    for %f8, %f10, %f12
+    fornot1 %f8, %f10, %f12
+    fornot2 %f8, %f10, %f12
+    fnands %f8, %f9, %f10
+    fnors %f8, %f9, %f10
+    fandnot1s %f8, %f9, %f10
+    fandnot2s %f8, %f9, %f10
+    fands %f8, %f9, %f10
+    fxnors %f8, %f9, %f10
+    fxors %f8, %f9, %f10
+    fornot1s %f8, %f9, %f10
+    fornot2s %f8, %f9, %f10
+    fors %f8, %f9, %f10
+
+    # Unsupported by QEMU
+    # fslas16 %f8, %f10, %f4
+    # fslas32 %f8, %f10, %f4
+    # fsll16 %f8, %f10, %f4
+    # fsll32 %f8, %f10, %f4
+    # fsra16 %f8, %f10, %f4
+    # fsra32 %f8, %f10, %f4
+    # fsrl16 %f8, %f10, %f4
+    # fsrl32 %f8, %f10, %f4
+
+    fcmpeq16 %f0, %f4, %i0
+    fcmpeq32 %f0, %f4, %i0
+    fcmpgt16 %f0, %f4, %i0
+    fcmpgt32 %f0, %f4, %i0
+    fcmple16 %f0, %f4, %i0
+    fcmple32 %f0, %f4, %i0
+    fcmpne16 %f0, %f4, %i0
+    fcmpne32 %f0, %f4, %i0
+
 done:
     ret
