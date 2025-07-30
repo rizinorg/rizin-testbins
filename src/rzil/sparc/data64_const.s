@@ -7,6 +7,10 @@ load_zero32:
     .long 0
 load_one32:
     .long 1
+load_two32:
+    .long 2
+load_three32:
+    .long 3
 load_neg_one32:
     .long 0xffffffff
 load_max_neg32:
@@ -18,6 +22,10 @@ load_zero64:
     .xword 0
 load_one64:
     .xword 1
+load_two64:
+    .xword 2
+load_three64:
+    .xword 3
 load_neg_one64:
     .xword 0xffffffffffffffff
 load_max_neg64:

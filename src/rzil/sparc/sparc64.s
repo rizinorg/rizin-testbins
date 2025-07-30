@@ -3,6 +3,7 @@
 
 .include "data.s"
 .include "rodata.s"
+.include "data64_const.s"
 
 .align 16
 .section ".text"
@@ -393,12 +394,12 @@ memory_tests:
     swap [%l4+%l6], %l4
     swap [%l5+32], %l5
 
-    set load_d, %l4
+    set load_d_rw, %l4
     ldx [%l4], %l5
     set 0x0, %l0
     cas [%l4], %l5, %l0
 
-    set load_d, %l4
+    set load_d_rw, %l4
     ldx [%l4+8], %l5
     set 0x0, %l0
     casx [%l4], %l5, %l0
