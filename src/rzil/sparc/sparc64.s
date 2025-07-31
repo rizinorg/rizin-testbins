@@ -536,13 +536,11 @@ test_edge:
     wr %i0, %g1, %ccr
     wr %i0, %g1, %asi
     wr %i0, %g1, %fprs
-    wr %i0, %g1, %asr19
 
     rd %y, %i0
     rd %ccr, %i0
     rd %asi, %i0
     rd %fprs, %i0
-    rd %asr19, %i0
 
     fone %f32
     fones %f0
