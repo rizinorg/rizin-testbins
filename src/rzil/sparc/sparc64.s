@@ -547,9 +547,44 @@ test_edge:
     fzero %f32
     fzeros %f0
 
+    # Correct loading order
+    set load_zero8, %o0
+    set store_q, %o1
+    lduh [%o0], %l2
+    sth %l2, [%o1]
+    set load_neg_one8, %o0
+    lduh [%o0], %l0
+    sth %l0, [%o1]
+
+    set load_zero16, %o0
+    set store_q, %o1
+    lduw [%o0], %l2
+    stw %l2, [%o1]
+    set load_neg_one16, %o0
+    lduw [%o0], %l0
+    stw %l0, [%o1]
+
+    set load_zero32, %o0
+    set store_q, %o1
+    ldd [%o0], %f32
+    std %f32, [%o1]
+    set load_neg_one32, %o0
+    ldd [%o0], %f0
+    std %f0, [%o1]
+
+    set load_zero64, %o0
+    set store_q, %o1
+    ldq [%o0], %f32
+    stq %f32, [%o1]
+    set load_neg_one64, %o0
+    ldq [%o0], %f0
+    stq %f0, [%o1]
+
     set load_zero64, %o0
     ld [%o0], %f0
     ldd [%o0], %f16
+    # Load actual zero
+    set load_zero128, %o0
     ldq [%o0], %f32
 
     set load_one32, %o0
