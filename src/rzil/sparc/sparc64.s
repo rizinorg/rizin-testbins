@@ -516,13 +516,15 @@ test_edge:
 
     wr %i0, %g1, %y
     wr %i0, %g1, %ccr
-    wr %i0, %g1, %asi
     wr %i0, %g1, %fprs
+    # ASI is not handled in Rizin.
+    # wr %i0, %g1, %asi
 
     rd %y, %i0
     rd %ccr, %i0
-    rd %asi, %i0
     rd %fprs, %i0
+    # ASI is not handled in Rizin.
+    # rd %asi, %i0
 
     fone %f32
     fones %f0
