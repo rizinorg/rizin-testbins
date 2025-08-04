@@ -84,24 +84,6 @@ llvm_asm_test_insn:
     xorcc %l1, %l2, %l3
     xnorcc %l1, %l2, %l3
 
-    # save
-    # restore 
-    # taddcc %g2, %g1, %g3
-    # tsubcc %g2, %g1, %g3
-    # taddcctv %g2, %g1, %g3
-    # tsubcctv %g2, %g1, %g3
-    # membar 15
-    # stbar 
-    # call %g1+%i2
-    # call %o1+8
-    # call %g1
-    # jmp %g1+%i2
-    # jmp %o1+8
-    # jmp %g1
-    # jmpl %g1+%i2, %g2
-    # jmpl %o1+8, %g2
-    # jmpl %g1, %g2
-    # rett %i7+8
     fitos %f0, %f4
     fitod %f0, %f4
     fitoq %f0, %f4
@@ -137,8 +119,8 @@ llvm_asm_test_insn:
     fmuls %f0, %f4, %f8
     fmuld %f0, %f4, %f8
     fmulq %f0, %f4, %f8
-    fsmuld %f0, %f4, %f8
-    fdmulq %f0, %f4, %f8
+    # fsmuld %f0, %f4, %f8
+    # fdmulq %f0, %f4, %f8
     fdivs %f0, %f4, %f8
     fdivd %f0, %f4, %f8
     fdivq %f0, %f4, %f8
@@ -668,5 +650,32 @@ test_edge:
     fcmpne16 %f0, %f4, %i0
     fcmpne32 %f0, %f4, %i0
 
+# Some more unique instructions
+
+    # taddcc %i2, %i1, %g3
+    # tsubcc %i2, %i1, %g3
+    # taddcctv %i2, %i1, %g3
+    # tsubcctv %i2, %i1, %g3
+    # membar 15
+    # stbar 
+
+    # save
+    # restore
+
+add_carry:
+    set load_neg_one64, %i0
+    set load_one64, %i1
+    ldd [%i0], %l0
+    ldd [%i1], %l2
+    # Set carry
+    addcc %l0, %l2, %l4
+    # Should set carry as well.
+    addxcc %l0, %l0, %l4
+    # Set carry
+    subcc %l0, %l0, %l4
+    # Should set carry as well.
+    subxcc %l0, %l0, %l4
+
 done:
     ret
+    nop

@@ -35,12 +35,19 @@ load_max_pos16:
 .align 16
 load_zero32:
     .long 0
+.align 16
 load_one32:
     .long 1
+.align 16
 load_two32:
     .long 2
+.align 16
 load_three32:
     .long 3
+.align 16
+load_0x2032:
+    .long 0x20
+.align 16
 load_neg_one32:
     .long 0xffffffff
 load_max_neg32:
