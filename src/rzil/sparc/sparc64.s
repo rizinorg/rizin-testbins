@@ -587,6 +587,10 @@ test_edge:
     fitoq %f3, %f44
     fitos %f3, %f3
 
+    fstod %f3, %f4
+    fstoq %f22, %f4
+    fdtoq %f44, %f4
+
     # NaN
     fdivs %f0, %f0, %f4
     fdivd %f16, %f16, %f24
