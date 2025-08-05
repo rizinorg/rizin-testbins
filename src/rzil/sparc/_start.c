@@ -6,8 +6,8 @@ extern void ai_tests();
 
 int _start() {
     asm (
-        "call ai_tests; nop;"
-        "call run_all_tests; nop;"
+        "call ai_tests; save;"
+        "call run_all_tests; save;"
     );
     return 0;
 }
