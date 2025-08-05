@@ -1183,3 +1183,5 @@ ai_tests:
     ldq [%i0], %f4
     fdivq %f0, %f4, %f8
 
+    ret
+    nop
