@@ -56,3 +56,28 @@ Unique instructions emulated: 150
      unknown failures: 0        0.00%
 
 Unique instructions emulated: 28
+
+
+**Binary**: `sparc32_insn_jmp.bin`
+
+
+**Command**
+
+```
+../rz-tracetest/rz-tracetest/build/rz-tracetest -s "fdiv.+" -b ~/repos/qemu/sparc32_insn_jmp.bin.trace
+```
+
+Compare frames...
+Frames: 367 Done: 100.00%
+
+--------------------------------------
+              success: 364     99.18%
+              skipped: 3        0.82%
+           invalid op: 0        0.00%
+           invalid il: 0        0.00%
+     vm runtime error: 0        0.00%
+          misexecuted: 0        0.00%
+             unlifted: 0        0.00%
+     unknown failures: 0        0.00%
+
+Unique instructions emulated: 15
