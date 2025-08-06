@@ -303,4 +303,4 @@ add_carry:
 
 done:
     ret
-    nop
+    restore

@@ -9,6 +9,18 @@ Sparc32: https://github.com/mcayland/sparc-linux-cross/
 
 ### Expected rz-tracetest results
 
+**Note about SAVE and RESTORE**
+
+The content of the local registers after SAVE or RESTORE varies.
+With traps the content is undefined, without traps it can be the content
+of the previous window or 0.
+
+Same for the out registers after SAVE.
+In Rizin they are always set to 0 (no traps are modeled),
+QEMU doesn't and models traps.
+So the trace and Rizin will likely mismatch.
+But only if an input register mismatches the test failed.
+
 **Command**
 
 ```

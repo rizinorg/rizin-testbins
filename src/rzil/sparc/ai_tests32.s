@@ -1090,4 +1090,4 @@ ai_tests:
     fdivq %f0, %f4, %f8
 
     ret
-    nop
+    restore

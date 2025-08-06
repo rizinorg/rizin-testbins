@@ -665,9 +665,6 @@ test_edge:
     # membar 15
     # stbar 
 
-    # save
-    # restore
-
 add_carry:
     set load_neg_one64, %i0
     set load_one64, %i1
@@ -684,4 +681,4 @@ add_carry:
 
 done:
     ret
-    nop
+    restore
