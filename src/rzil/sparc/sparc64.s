@@ -658,6 +658,74 @@ test_edge:
 
 # Some more unique instructions
 
+misc:
+
+    set random_data_0, %l7
+
+    ld [%l7+0x00], %l0
+    ld [%l7+0x10], %l1
+    ld [%l7+0x20], %l2
+    ld [%l7+0x30], %l3
+    ld [%l7+0x40], %l4
+    ld [%l7+0x50], %l5
+    ld [%l7+0x60], %l6
+
+    ldq [%l7+0x00], %f0
+    ldq [%l7+0x10], %f4
+    ldq [%l7+0x20], %f8
+    ldq [%l7+0x30], %f12
+    ldq [%l7+0x40], %f16
+    ldq [%l7+0x50], %f20
+    ldq [%l7+0x60], %f24
+    ldq [%l7+0x70], %f28
+    ldq [%l7+0x80], %f32
+    ldq [%l7+0x90], %f36
+    ldq [%l7+0xa0], %f40
+    ldq [%l7+0xb0], %f44
+    ldq [%l7+0xc0], %f48
+    ldq [%l7+0xd0], %f52
+    ldq [%l7+0xe0], %f56
+    ldq [%l7+0xf0], %f60
+
+    fsmuld %f0, %f4, %f16
+    fdmulq %f32, %f34, %f16
+    fpadd16 %f0, %f4, %f16
+    fpsub16 %f0, %f4, %f16
+    fpadd16s %f0, %f4, %f16
+    fpsub16S %f0, %f4, %f16
+    fpadd32 %f0, %f4, %f16
+    fpsub32 %f0, %f4, %f16
+    fpadd32s %f0, %f4, %f16
+    fpsub32S %f0, %f4, %f16
+    fmul8x16 %f0, %f4, %f16
+    fmul8x16al %f0, %f4, %f16
+    fmul8x16au %f0, %f4, %f16
+    fmul8sux16 %f0, %f2, %f16
+    fmul8ulx16 %f0, %f2, %f16
+    fmuld8sux16 %f0, %f2, %f16
+    fmuld8ulx16 %f0, %f2, %f16
+    alignaddr %l0, %l1, %l7
+    alignaddrl %l0, %l1, %l7
+    fpmerge %f0, %f2, %f16
+    fexpand %f2, %f16
+    popc %l2, %l6
+    faligndata %f0, %f32, %f34
+    pdist %f0, %f4, %f16
+    bmask %l0, %l1, %l6
+    bshuffle %f0, %f2, %f16
+    fpack16 %f2, %f16
+    fpack32 %f0, %f2, %f16
+    fpackfix %f2, %f16
+    fpack16 %f4, %f16
+    fpack32 %f2, %f4, %f16
+    fpackfix %f4, %f16
+    array8 %l0, %l2, %l6
+    array16 %l0, %l2, %l6
+    array32 %l0, %l2, %l6
+    array8 %l1, %l3, %l6
+    array16 %l1, %l3, %l6
+    array32 %l1, %l3, %l6
+
     # taddcc %i2, %i1, %g3
     # tsubcc %i2, %i1, %g3
     # taddcctv %i2, %i1, %g3
