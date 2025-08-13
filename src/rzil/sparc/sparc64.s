@@ -713,18 +713,31 @@ misc:
     pdist %f0, %f4, %f16
     bmask %l0, %l1, %l6
     bshuffle %f0, %f2, %f16
+    # Set the minimum GSR.scale
+    wr %g0, 0x0, %asr19
     fpack16 %f2, %f16
     fpack32 %f0, %f2, %f16
     fpackfix %f2, %f16
     fpack16 %f4, %f16
     fpack32 %f2, %f4, %f16
     fpackfix %f4, %f16
+    # Set the maximum GSR.scale
+    bshuffle %f0, %f2, %f16
+    fpack16 %f2, %f16
+    fpack32 %f0, %f2, %f16
+    fpackfix %f2, %f16
+    fpack16 %f4, %f16
+    fpack32 %f2, %f4, %f16
+    fpackfix %f4, %f16
+    wr %g0, 0xfff, %asr19
+    set 0, %l2
     array8 %l0, %l2, %l6
     array16 %l0, %l2, %l6
     array32 %l0, %l2, %l6
-    array8 %l1, %l3, %l6
-    array16 %l1, %l3, %l6
-    array32 %l1, %l3, %l6
+    set 5, %l2
+    array8 %l1, %l2, %l6
+    array16 %l1, %l2, %l6
+    array32 %l1, %l2, %l6
 
     # taddcc %i2, %i1, %g3
     # tsubcc %i2, %i1, %g3

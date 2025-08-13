@@ -36,22 +36,24 @@ Our implementation represents zero with all exponent bits set.
 QEMU sets all bits to `0`. Although semantically both are correct, it still leads to a mismatch.
 
 `rd fprs, i0` is skipped because QEMU sets more than 3 bits (more than the ISA defines).
+Trap related instruction are allowed to fail, because Rizin doesn't handle traps yet.
+`save` instructions are allowed to fail iff `l0-l7` and `o0-o7` are zero in Rizin but other values in QEMU.
 
 **Binary**: `sparc64_insn_all.bin`
 
 **Expected results (or better)**
 
 --------------------------------------
-              success: 1767    96.98%
-              skipped: 55       3.02%
-           invalid op: 0        0.00%
+              success: 1826    96.31%
+              skipped: 66       3.48%
+           invalid op: 1        0.05%
            invalid il: 0        0.00%
      vm runtime error: 0        0.00%
-          misexecuted: 0        0.00%
+          misexecuted: 3        0.16%
              unlifted: 0        0.00%
      unknown failures: 0        0.00%
 
-Unique instructions emulated: 150
+Unique instructions emulated: 177
 
 **Binary**: `sparc64_insn_jmp.bin`
 
