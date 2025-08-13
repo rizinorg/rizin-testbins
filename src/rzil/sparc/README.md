@@ -44,16 +44,16 @@ Trap related instruction are allowed to fail, because Rizin doesn't handle traps
 **Expected results (or better)**
 
 --------------------------------------
-              success: 1826    96.31%
-              skipped: 66       3.48%
-           invalid op: 1        0.05%
+              success: 1848    97.01%
+              skipped: 55       2.89%
+           invalid op: 0        0.00%
            invalid il: 0        0.00%
      vm runtime error: 0        0.00%
-          misexecuted: 3        0.16%
+          misexecuted: 2        0.10%
              unlifted: 0        0.00%
      unknown failures: 0        0.00%
 
-Unique instructions emulated: 177
+Unique instructions emulated: 184
 
 **Binary**: `sparc64_insn_jmp.bin`
 
