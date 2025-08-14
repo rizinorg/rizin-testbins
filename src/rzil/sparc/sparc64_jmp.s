@@ -2278,3 +2278,4 @@ nop
 
 done:
         ret
+        restore

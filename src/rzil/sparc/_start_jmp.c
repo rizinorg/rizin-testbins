@@ -4,6 +4,6 @@
 extern void test_branches();
 
 int _start() {
-  asm("call test_branches; nop");
+  asm("call test_branches; save");
   return 0;
 }

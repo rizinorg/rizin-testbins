@@ -628,4 +628,4 @@ nop
 
 done:
         ret
-        nop
+        restore
