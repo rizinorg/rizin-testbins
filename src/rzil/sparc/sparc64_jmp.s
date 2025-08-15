@@ -4,12 +4,12 @@
 /**
  * \file Assembly tests for (conditional) branches.
  *
- * Each test has the same sturcture:
- * It jumps to check_branch where it devides l7/l6.
- * If the devision throws a division_by_zero exception the test failed.
- * If it doesn't throw an exception it jumps to the next test.
- *
- * All instructions should be emulated without floating point exception.
+ * Each test has the same stucture:
+ * 1. It does the condition check and then devides 1 / %l6.
+ * The branch tests will fail if the delayed instruction hasn't set %l6 = 1.
+ * The branch annulled tests will fail if the annulled instruction was executed anyways
+ * setting %l6 = 0.
+ * If the devision throws a division_by_zero exception if the test failed.
  *
  * Register usage:
  *
@@ -38,13 +38,6 @@
 .section ".text"
     .global test_branches
 
-check_branch:
-        # The udiv will throw an exception if l6 is 0
-        # The whole test should run without exception
-        udivx %l7, %l6, %l5
-        jmpl %l0, %g0
-        nop
-
 test_branches:
 
 # For performing 32bit math
@@ -67,172 +60,135 @@ ldx [%o0], %o3
 set load_one64, %o0
 ldx [%o0], %o0
 
-# Offset to next test
 set 0x18, %l1
+
 # Dividend. Divisor is in l6.
 set 1, %l7
 
 # Set divisor which triggers exception
 set 0, %l6
-# Set address to next valid test
-rd %pc, %l0
-add %l0, %l1, %l0
-# Do comparison/Set icc bits
-wr %g0, 0, %ccr
-ba %icc, check_branch
+ba check_branch_0
 set 1, %l6
-# Is only reached if branch was (incorrectly) not taken.
-set 0, %l6
+check_branch_0:
 udiv %l7, %l6, %l5
 
 # Branch Never
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-wr %g0, 0, %ccr
-bn %icc, check_branch
 set 1, %l6
+bn check_branch_1
 nop
+check_branch_1:
 udiv %l7, %l6, %l5
 
 # Branch not equal (not Z)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 orcc %g0, %l1, %l1
-bne %icc, check_branch
+bne check_branch_2
 set 1, %l6
-set 0, %l6
+check_branch_2:
 udiv %l7, %l6, %l5
 
 # Branch equal (Z)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 andcc %g0, %l1, %g0
-be %icc, check_branch
+be check_branch_3
 set 1, %l6
-set 0, %l6
+check_branch_3:
 udiv %l7, %l6, %l5
 
 # Branch greater (not (Z or (N xor V)))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %i0, %g0
-bg %icc, check_branch
+bg check_branch_4
 set 1, %l6
-set 0, %l6
+check_branch_4:
 udiv %l7, %l6, %l5
 
 # Branch less equal (Z or (N xor V))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %g0
-ble %icc, check_branch
+ble check_branch_5
 set 1, %l6
-set 0, %l6
+check_branch_5:
 udiv %l7, %l6, %l5
 
 # Branch greater equal (not (N xor V))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %g0
-bge %icc, check_branch
+bge check_branch_6
 set 1, %l6
-set 0, %l6
+check_branch_6:
 udiv %l7, %l6, %l5
 
 # Branch less (N xor V)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %i1, %g0
-bl %icc, check_branch
+bl check_branch_7
 set 1, %l6
-set 0, %l6
+check_branch_7:
 udiv %l7, %l6, %l5
 
 # Branch greater unsigned (not (C or Z))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %i0, %g0
-bgu %icc, check_branch
+bgu check_branch_8
 set 1, %l6
-set 0, %l6
+check_branch_8:
 udiv %l7, %l6, %l5
 
 # Branch less equal unsigned (C or Z)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %i0
-bleu %icc, check_branch
+bleu check_branch_9
 set 1, %l6
-set 0, %l6
+check_branch_9:
 udiv %l7, %l6, %l5
 
 # Branch carry clear (not C)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i0, %i0, %i4
-bcc %icc, check_branch
+bcc check_branch_10
 set 1, %l6
-set 0, %l6
+check_branch_10:
 udiv %l7, %l6, %l5
 
 # Branch on carry (C)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i1, %i1, %i4
-bcs %icc, check_branch
+bcs check_branch_11
 set 1, %l6
-set 0, %l6
+check_branch_11:
 udiv %l7, %l6, %l5
 
 # Branch on positive (not N)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i0, %i0, %i4
-bpos %icc, check_branch
+bpos check_branch_12
 set 1, %l6
-set 0, %l6
+check_branch_12:
 udiv %l7, %l6, %l5
 
 # Branch on negative (N)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i1, %i1, %i4
-bneg %icc, check_branch
+bneg check_branch_13
 set 1, %l6
-set 0, %l6
+check_branch_13:
 udiv %l7, %l6, %l5
 
 # Branch overflow clear (not V)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i0, %i0, %i4
-bvc %icc, check_branch
+bvc check_branch_14
 set 1, %l6
-set 0, %l6
+check_branch_14:
 udiv %l7, %l6, %l5
 
 # Branch one overflow (V)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i3, %i0, %i4
-bvs %icc, check_branch
+bvs check_branch_15
 set 1, %l6
-set 0, %l6
+check_branch_15:
 udiv %l7, %l6, %l5
 
 #
@@ -240,555 +196,356 @@ udiv %l7, %l6, %l5
 #
 
 set 1, %l6
-# Offset to next test
-set 0x14, %l1
 
 # Branch Never
-rd %pc, %l0
-add %l0, %l1, %l0
 nop
-bn,a %icc, check_branch
+bn,a check_branch_1_a
 set 0, %l6
+check_branch_1_a:
 udiv %l7, %l6, %l5
 
 # Branch not equal (not Z)
-rd %pc, %l0
-add %l0, %l1, %l0
 andcc %g0, %l1, %g0
-bne,a %icc, check_branch
+bne,a check_branch_2_a
 set 0, %l6
+check_branch_2_a:
 udiv %l7, %l6, %l5
 
 # Branch equal (Z)
-rd %pc, %l0
-add %l0, %l1, %l0
 andcc %l1, %l1, %l1
-be,a %icc, check_branch
+be,a check_branch_3_a
 set 0, %l6
+check_branch_3_a:
 udiv %l7, %l6, %l5
 
 # Branch greater (not (Z or (N xor V)))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %i0
-bg,a %icc, check_branch
+bg,a check_branch_4_a
 set 0, %l6
+check_branch_4_a:
 udiv %l7, %l6, %l5
 
 # Branch less equal (Z or (N xor V))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %i0, %g0
-ble,a %icc, check_branch
+ble,a check_branch_5_a
 set 0, %l6
+check_branch_5_a:
 udiv %l7, %l6, %l5
 
 # Branch greater equal (not (N xor V))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %i0
-bge,a %icc, check_branch
+bge,a check_branch_6_a
 set 0, %l6
+check_branch_6_a:
 udiv %l7, %l6, %l5
 
 # Branch less (N xor V)
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %i0, %g0
-bl,a %icc, check_branch
+bl,a check_branch_7_a
 set 0, %l6
+check_branch_7_a:
 udiv %l7, %l6, %l5
 
 # Branch greater unsigned (not (C or Z))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %g0
-bgu,a %icc, check_branch
+bgu,a check_branch_8_a
 set 0, %l6
+check_branch_8_a:
 udiv %l7, %l6, %l5
 
 # Branch less equal unsigned (C or Z)
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %i1, %g0
-bleu,a %icc, check_branch
+bleu,a check_branch_9_a
 set 0, %l6
+check_branch_9_a:
 udiv %l7, %l6, %l5
 
 # Branch carry clear (not C)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i1, %i0, %i4
-bcc,a %icc, check_branch
+bcc,a check_branch_10_a
 set 0, %l6
+check_branch_10_a:
 udiv %l7, %l6, %l5
 
 # Branch on carry (C)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i0, %i0, %i4
-bcs,a %icc, check_branch
+bcs,a check_branch_11_a
 set 0, %l6
+check_branch_11_a:
 udiv %l7, %l6, %l5
 
 # Branch on positive (not N)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i1, %i1, %i4
-bpos,a %icc, check_branch
+bpos,a check_branch_12_a
 set 0, %l6
+check_branch_12_a:
 udiv %l7, %l6, %l5
 
 # Branch on negative (N)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i0, %i0, %i4
-bneg,a %icc, check_branch
+bneg,a check_branch_13_a
 set 0, %l6
+check_branch_13_a:
 udiv %l7, %l6, %l5
 
 # Branch overflow clear (not V)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i3, %i0, %i4
-bvc,a %icc, check_branch
+bvc,a check_branch_14_a
 set 0, %l6
+check_branch_14_a:
 udiv %l7, %l6, %l5
 
 # Branch one overflow (V)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %i0, %i0, %i4
-bvs,a %icc, check_branch
+bvs,a check_branch_15_a
 set 0, %l6
+check_branch_15_a:
 udiv %l7, %l6, %l5
 
 #
 # 64bit branches
 #
 
-# Offset to next test
 set 0x18, %l1
+
 # Dividend. Divisor is in l6.
 set 1, %l7
 
 # Set divisor which triggers exception
 set 0, %l6
-# Set address to next valid test
-rd %pc, %l0
-add %l0, %l1, %l0
-# Do comparison/Set icc bits
-wr %g0, 0, %ccr
-ba %xcc, check_branch
+ba %xcc, check_branch_xcc_0
 set 1, %l6
-# Is only reached if branch was (incorrectly) not taken.
-set 0, %l6
+check_branch_xcc_0:
 udiv %l7, %l6, %l5
 
 # Branch Never
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-wr %g0, 0, %ccr
-bn %xcc, check_branch
 set 1, %l6
+bn %xcc, check_branch_xcc_1
 nop
+check_branch_xcc_1:
 udiv %l7, %l6, %l5
 
 # Branch not equal (not Z)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 orcc %g0, %l1, %l1
-bne %xcc, check_branch
+bne %xcc, check_branch_xcc_2
 set 1, %l6
-set 0, %l6
+check_branch_xcc_2:
 udiv %l7, %l6, %l5
 
 # Branch equal (Z)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 andcc %g0, %l1, %g0
-be %xcc, check_branch
+be %xcc, check_branch_xcc_3
 set 1, %l6
-set 0, %l6
+check_branch_xcc_3:
 udiv %l7, %l6, %l5
 
 # Branch greater (not (Z or (N xor V)))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %o0, %g0
-bg %xcc, check_branch
+bg %xcc, check_branch_xcc_4
 set 1, %l6
-set 0, %l6
+check_branch_xcc_4:
 udiv %l7, %l6, %l5
 
 # Branch less equal (Z or (N xor V))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %g0
-ble %xcc, check_branch
+ble %xcc, check_branch_xcc_5
 set 1, %l6
-set 0, %l6
+check_branch_xcc_5:
 udiv %l7, %l6, %l5
 
 # Branch greater equal (not (N xor V))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %g0
-bge %xcc, check_branch
+bge %xcc, check_branch_xcc_6
 set 1, %l6
-set 0, %l6
+check_branch_xcc_6:
 udiv %l7, %l6, %l5
 
 # Branch less (N xor V)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %o1, %g0
-bl %xcc, check_branch
+bl %xcc, check_branch_xcc_7
 set 1, %l6
-set 0, %l6
+check_branch_xcc_7:
 udiv %l7, %l6, %l5
 
 # Branch greater unsigned (not (C or Z))
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %o0, %g0
-bgu %xcc, check_branch
+bgu %xcc, check_branch_xcc_8
 set 1, %l6
-set 0, %l6
+check_branch_xcc_8:
 udiv %l7, %l6, %l5
 
 # Branch less equal unsigned (C or Z)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %o0
-bleu %xcc, check_branch
+bleu %xcc, check_branch_xcc_9
 set 1, %l6
-set 0, %l6
+check_branch_xcc_9:
 udiv %l7, %l6, %l5
 
 # Branch carry clear (not C)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o0, %o0, %o4
-bcc %xcc, check_branch
+bcc %xcc, check_branch_xcc_10
 set 1, %l6
-set 0, %l6
+check_branch_xcc_10:
 udiv %l7, %l6, %l5
 
 # Branch on carry (C)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o1, %o1, %o4
-bcs %xcc, check_branch
+bcs %xcc, check_branch_xcc_11
 set 1, %l6
-set 0, %l6
+check_branch_xcc_11:
 udiv %l7, %l6, %l5
 
 # Branch on positive (not N)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o0, %o0, %o4
-bpos %xcc, check_branch
+bpos %xcc, check_branch_xcc_12
 set 1, %l6
-set 0, %l6
+check_branch_xcc_12:
 udiv %l7, %l6, %l5
 
 # Branch on negative (N)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o1, %o1, %o4
-bneg %xcc, check_branch
+bneg %xcc, check_branch_xcc_13
 set 1, %l6
-set 0, %l6
+check_branch_xcc_13:
 udiv %l7, %l6, %l5
 
 # Branch overflow clear (not V)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o0, %o0, %o4
-bvc %xcc, check_branch
+bvc %xcc, check_branch_xcc_14
 set 1, %l6
-set 0, %l6
+check_branch_xcc_14:
 udiv %l7, %l6, %l5
 
 # Branch one overflow (V)
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o3, %o0, %o4
-bvs %xcc, check_branch
+bvs %xcc, check_branch_xcc_15
 set 1, %l6
-set 0, %l6
+check_branch_xcc_15:
 udiv %l7, %l6, %l5
 
 #
-# 64bit Annul bits
+# Annul bits
 #
 
 set 1, %l6
-# Offset to next test
-set 0x10, %l1
 
 # Branch Never
-rd %pc, %l0
-add %l0, %l1, %l0
 nop
-bn,a %xcc, check_branch
+bn,a %xcc, check_branch_xcc_1_a
 set 0, %l6
+check_branch_xcc_1_a:
 udiv %l7, %l6, %l5
 
 # Branch not equal (not Z)
-rd %pc, %l0
-add %l0, %l1, %l0
 andcc %g0, %l1, %g0
-bne,a %xcc, check_branch
+bne,a %xcc, check_branch_xcc_2_a
 set 0, %l6
+check_branch_xcc_2_a:
 udiv %l7, %l6, %l5
 
 # Branch equal (Z)
-rd %pc, %l0
-add %l0, %l1, %l0
 andcc %l1, %l1, %l1
-be,a %xcc, check_branch
+be,a %xcc, check_branch_xcc_3_a
 set 0, %l6
+check_branch_xcc_3_a:
 udiv %l7, %l6, %l5
 
 # Branch greater (not (Z or (N xor V)))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %o0
-bg,a %xcc, check_branch
+bg,a %xcc, check_branch_xcc_4_a
 set 0, %l6
+check_branch_xcc_4_a:
 udiv %l7, %l6, %l5
 
 # Branch less equal (Z or (N xor V))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %o0, %g0
-ble,a %xcc, check_branch
+ble,a %xcc, check_branch_xcc_5_a
 set 0, %l6
+check_branch_xcc_5_a:
 udiv %l7, %l6, %l5
 
 # Branch greater equal (not (N xor V))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %o0
-bge,a %xcc, check_branch
+bge,a %xcc, check_branch_xcc_6_a
 set 0, %l6
+check_branch_xcc_6_a:
 udiv %l7, %l6, %l5
 
 # Branch less (N xor V)
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %o0, %g0
-bl,a %xcc, check_branch
+bl,a %xcc, check_branch_xcc_7_a
 set 0, %l6
+check_branch_xcc_7_a:
 udiv %l7, %l6, %l5
 
 # Branch greater unsigned (not (C or Z))
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %g0, %g0
-bgu,a %xcc, check_branch
+bgu,a %xcc, check_branch_xcc_8_a
 set 0, %l6
+check_branch_xcc_8_a:
 udiv %l7, %l6, %l5
 
 # Branch less equal unsigned (C or Z)
-rd %pc, %l0
-add %l0, %l1, %l0
 cmp %o1, %g0
-bleu,a %xcc, check_branch
+bleu,a %xcc, check_branch_xcc_9_a
 set 0, %l6
+check_branch_xcc_9_a:
 udiv %l7, %l6, %l5
 
 # Branch carry clear (not C)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o1, %o0, %o4
-bcc,a %xcc, check_branch
+bcc,a %xcc, check_branch_xcc_10_a
 set 0, %l6
+check_branch_xcc_10_a:
 udiv %l7, %l6, %l5
 
 # Branch on carry (C)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o0, %o0, %o4
-bcs,a %xcc, check_branch
+bcs,a %xcc, check_branch_xcc_11_a
 set 0, %l6
+check_branch_xcc_11_a:
 udiv %l7, %l6, %l5
 
 # Branch on positive (not N)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o1, %o1, %o4
-bpos,a %xcc, check_branch
+bpos,a %xcc, check_branch_xcc_12_a
 set 0, %l6
+check_branch_xcc_12_a:
 udiv %l7, %l6, %l5
 
 # Branch on negative (N)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o0, %o0, %o4
-bneg,a %xcc, check_branch
+bneg,a %xcc, check_branch_xcc_13_a
 set 0, %l6
+check_branch_xcc_13_a:
 udiv %l7, %l6, %l5
 
 # Branch overflow clear (not V)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o3, %o0, %o4
-bvc,a %xcc, check_branch
+bvc,a %xcc, check_branch_xcc_14_a
 set 0, %l6
+check_branch_xcc_14_a:
 udiv %l7, %l6, %l5
 
 # Branch one overflow (V)
-rd %pc, %l0
-add %l0, %l1, %l0
 addcc %o0, %o0, %o4
-bvs,a %xcc, check_branch
+bvs,a %xcc, check_branch_xcc_15_a
 set 0, %l6
-udiv %l7, %l6, %l5
-
-# Register conditional branches
-
-# Offset to next test
-set 0x18, %l1
-
-clr %i0
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brz %i0, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brlez %i0, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brlez %o1, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brlz %o1, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brnz %o1, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brgz %o3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brgez %o3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brgez %i0, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Annulled
-
-# Offset to next test
-set 0x14, %l1
-
-set 1, %l6
-
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brz,a %i1, check_branch
-set 0, %l6
-udiv %l7, %l6, %l5
-
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brlez,a %i3, check_branch
-set 0, %l6
-udiv %l7, %l6, %l5
-
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brlz,a %o3, check_branch
-set 0, %l6
-udiv %l7, %l6, %l5
-
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brnz,a %i0, check_branch
-set 0, %l6
-udiv %l7, %l6, %l5
-
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brgz,a %o1, check_branch
-set 0, %l6
-udiv %l7, %l6, %l5
-
-rd %pc, %l0
-add %l0, %l1, %l0
-nop
-brgez,a %o1, check_branch
-set 0, %l6
+check_branch_xcc_15_a:
 udiv %l7, %l6, %l5
 
 # Floats
@@ -817,262 +574,210 @@ set 0x18, %l1
 
 # Branch always
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fba check_branch
+fba check_branch_fcc0_0
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_0:
 udiv %l7, %l6, %l5
 
 # Branch never
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbn check_branch
+fbn check_branch_fcc0_1
 set 1, %l6
-nop
+check_branch_fcc0_1:
 udiv %l7, %l6, %l5
 
 # Branch unordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f3, %f3
-fbu check_branch
+fbu check_branch_fcc0_2
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_2:
 udiv %l7, %l6, %l5
 
 # Branch greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fbg check_branch
+fbg check_branch_fcc0_3
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_3:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fbug check_branch
+fbug check_branch_fcc0_4
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_4:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f3, %f3
-fbug check_branch
+fbug check_branch_fcc0_5
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_5:
 udiv %l7, %l6, %l5
 
 # Branch less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f1
-fbl check_branch
+fbl check_branch_fcc0_6
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_6:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f1
-fbul check_branch
+fbul check_branch_fcc0_7
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_7:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f3, %f3
-fbul check_branch
+fbul check_branch_fcc0_8
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_8:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fblg check_branch
+fblg check_branch_fcc0_9
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_9:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f1
-fblg check_branch
+fblg check_branch_fcc0_10
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_10:
 udiv %l7, %l6, %l5
 
 # Branch not equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f2, %f0
-fbne check_branch
+fbne check_branch_fcc0_11
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_11:
 udiv %l7, %l6, %l5
 
 # Branch equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbe check_branch
+fbe check_branch_fcc0_12
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_12:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f3, %f0
-fbue check_branch
+fbue check_branch_fcc0_13
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_13:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbue check_branch
+fbue check_branch_fcc0_14
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_14:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbge check_branch
+fbge check_branch_fcc0_15
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_15:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f2
-fbge check_branch
+fbge check_branch_fcc0_16
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_16:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbuge check_branch
+fbuge check_branch_fcc0_17
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_17:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fbuge check_branch
+fbuge check_branch_fcc0_18
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_18:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f3
-fbuge check_branch
+fbuge check_branch_fcc0_19
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_19:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fble check_branch
+fble check_branch_fcc0_20
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_20:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f1
-fble check_branch
+fble check_branch_fcc0_21
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_21:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbule check_branch
+fbule check_branch_fcc0_22
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_22:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f1
-fbule check_branch
+fbule check_branch_fcc0_23
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_23:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f3
-fbule check_branch
+fbule check_branch_fcc0_24
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_24:
 udiv %l7, %l6, %l5
 
 # Branch ordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbo check_branch
+fbo check_branch_fcc0_25
 set 1, %l6
-set 0, %l6
+check_branch_fcc0_25:
 udiv %l7, %l6, %l5
 
 # Annulled tests
@@ -1081,115 +786,101 @@ set 1, %l6
 set 0x14, %l1
 
 # Branch never
-rd %pc, %l0
-add %l0, %l1, %l0
 nop
-fbn,a check_branch
+fbn,a check_branch_fcc0_a_0
 set 0, %l6
+check_branch_fcc0_a_0:
 udiv %l7, %l6, %l5
 
 # Branch unordered
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f1
-fbu,a check_branch
+fbu,a check_branch_fcc0_a_1
 set 0, %l6
+check_branch_fcc0_a_1:
 udiv %l7, %l6, %l5
 
 # Branch greater
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbg,a check_branch
+fbg,a check_branch_fcc0_a_2
 set 0, %l6
+check_branch_fcc0_a_2:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbug,a check_branch
+fbug,a check_branch_fcc0_a_3
 set 0, %l6
+check_branch_fcc0_a_3:
 udiv %l7, %l6, %l5
 
 # Branch less
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbl,a check_branch
+fbl,a check_branch_fcc0_a_4
 set 0, %l6
+check_branch_fcc0_a_4:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbul,a check_branch
+fbul,a check_branch_fcc0_a_5
 set 0, %l6
+check_branch_fcc0_a_5:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fblg,a check_branch
+fblg,a check_branch_fcc0_a_6
 set 0, %l6
+check_branch_fcc0_a_6:
 udiv %l7, %l6, %l5
 
 # Branch not equal
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f0
-fbne,a check_branch
+fbne,a check_branch_fcc0_a_7
 set 0, %l6
+check_branch_fcc0_a_7:
 udiv %l7, %l6, %l5
 
 # Branch equal
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fbe,a check_branch
+fbe,a check_branch_fcc0_a_8
 set 0, %l6
+check_branch_fcc0_a_8:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f2, %f0
-fbue,a check_branch
+fbue,a check_branch_fcc0_a_9
 set 0, %l6
+check_branch_fcc0_a_9:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f0, %f1
-fbuge,a check_branch
+fbuge,a check_branch_fcc0_a_10
 set 0, %l6
+check_branch_fcc0_a_10:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fble,a check_branch
+fble,a check_branch_fcc0_a_11
 set 0, %l6
+check_branch_fcc0_a_11:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f1, %f0
-fbule,a check_branch
+fbule,a check_branch_fcc0_a_12
 set 0, %l6
+check_branch_fcc0_a_12:
 udiv %l7, %l6, %l5
 
 # Branch ordered
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %f3, %f3
-fbo,a check_branch
+fbo,a check_branch_fcc0_a_13
 set 0, %l6
+check_branch_fcc0_a_13:
 udiv %l7, %l6, %l5
 
 # Float branch test - fcc1
@@ -1198,262 +889,210 @@ set 0x18, %l1
 
 # Branch always
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fba %fcc1, check_branch
+fba %fcc1, check_branch_fcc1_0
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_0:
 udiv %l7, %l6, %l5
 
 # Branch never
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbn %fcc1, check_branch
+fbn %fcc1, check_branch_fcc1_1
 set 1, %l6
-nop
+check_branch_fcc1_1:
 udiv %l7, %l6, %l5
 
 # Branch unordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f3, %f3
-fbu %fcc1, check_branch
+fbu %fcc1, check_branch_fcc1_2
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_2:
 udiv %l7, %l6, %l5
 
 # Branch greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f1, %f0
-fbg %fcc1, check_branch
+fbg %fcc1, check_branch_fcc1_3
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_3:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f1, %f0
-fbug %fcc1, check_branch
+fbug %fcc1, check_branch_fcc1_4
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_4:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f3, %f3
-fbug %fcc1, check_branch
+fbug %fcc1, check_branch_fcc1_5
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_5:
 udiv %l7, %l6, %l5
 
 # Branch less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f1
-fbl %fcc1, check_branch
+fbl %fcc1, check_branch_fcc1_6
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_6:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f1
-fbul %fcc1, check_branch
+fbul %fcc1, check_branch_fcc1_7
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_7:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f3, %f3
-fbul %fcc1, check_branch
+fbul %fcc1, check_branch_fcc1_8
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_8:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f1, %f0
-fblg %fcc1, check_branch
+fblg %fcc1, check_branch_fcc1_9
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_9:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f1
-fblg %fcc1, check_branch
+fblg %fcc1, check_branch_fcc1_10
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_10:
 udiv %l7, %l6, %l5
 
 # Branch not equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f2, %f0
-fbne %fcc1, check_branch
+fbne %fcc1, check_branch_fcc1_11
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_11:
 udiv %l7, %l6, %l5
 
 # Branch equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbe %fcc1, check_branch
+fbe %fcc1, check_branch_fcc1_12
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_12:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f3, %f0
-fbue %fcc1, check_branch
+fbue %fcc1, check_branch_fcc1_13
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_13:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbue %fcc1, check_branch
+fbue %fcc1, check_branch_fcc1_14
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_14:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbge %fcc1, check_branch
+fbge %fcc1, check_branch_fcc1_15
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_15:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f2
-fbge %fcc1, check_branch
+fbge %fcc1, check_branch_fcc1_16
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_16:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbuge %fcc1, check_branch
+fbuge %fcc1, check_branch_fcc1_17
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_17:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f1, %f0
-fbuge %fcc1, check_branch
+fbuge %fcc1, check_branch_fcc1_18
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_18:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f1, %f3
-fbuge %fcc1, check_branch
+fbuge %fcc1, check_branch_fcc1_19
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_19:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fble %fcc1, check_branch
+fble %fcc1, check_branch_fcc1_20
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_20:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f1
-fble %fcc1, check_branch
+fble %fcc1, check_branch_fcc1_21
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_21:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbule %fcc1, check_branch
+fbule %fcc1, check_branch_fcc1_22
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_22:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f1
-fbule %fcc1, check_branch
+fbule %fcc1, check_branch_fcc1_23
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_23:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f3
-fbule %fcc1, check_branch
+fbule %fcc1, check_branch_fcc1_24
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_24:
 udiv %l7, %l6, %l5
 
 # Branch ordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc1, %f0, %f0
-fbo %fcc1, check_branch
+fbo %fcc1, check_branch_fcc1_25
 set 1, %l6
-set 0, %l6
+check_branch_fcc1_25:
 udiv %l7, %l6, %l5
 
 
@@ -1461,264 +1100,214 @@ udiv %l7, %l6, %l5
 
 set 0x18, %l1
 
+set 0x18, %l1
+
 # Branch always
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fba %fcc2, check_branch
+fba %fcc2, check_branch_fcc2_0
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_0:
 udiv %l7, %l6, %l5
 
 # Branch never
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbn %fcc2, check_branch
+fbn %fcc2, check_branch_fcc2_1
 set 1, %l6
-nop
+check_branch_fcc2_1:
 udiv %l7, %l6, %l5
 
 # Branch unordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f3, %f3
-fbu %fcc2, check_branch
+fbu %fcc2, check_branch_fcc2_2
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_2:
 udiv %l7, %l6, %l5
 
 # Branch greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f1, %f0
-fbg %fcc2, check_branch
+fbg %fcc2, check_branch_fcc2_3
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_3:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f1, %f0
-fbug %fcc2, check_branch
+fbug %fcc2, check_branch_fcc2_4
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_4:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f3, %f3
-fbug %fcc2, check_branch
+fbug %fcc2, check_branch_fcc2_5
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_5:
 udiv %l7, %l6, %l5
 
 # Branch less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f1
-fbl %fcc2, check_branch
+fbl %fcc2, check_branch_fcc2_6
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_6:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f1
-fbul %fcc2, check_branch
+fbul %fcc2, check_branch_fcc2_7
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_7:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f3, %f3
-fbul %fcc2, check_branch
+fbul %fcc2, check_branch_fcc2_8
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_8:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f1, %f0
-fblg %fcc2, check_branch
+fblg %fcc2, check_branch_fcc2_9
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_9:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f1
-fblg %fcc2, check_branch
+fblg %fcc2, check_branch_fcc2_10
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_10:
 udiv %l7, %l6, %l5
 
 # Branch not equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f2, %f0
-fbne %fcc2, check_branch
+fbne %fcc2, check_branch_fcc2_11
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_11:
 udiv %l7, %l6, %l5
 
 # Branch equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbe %fcc2, check_branch
+fbe %fcc2, check_branch_fcc2_12
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_12:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f3, %f0
-fbue %fcc2, check_branch
+fbue %fcc2, check_branch_fcc2_13
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_13:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbue %fcc2, check_branch
+fbue %fcc2, check_branch_fcc2_14
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_14:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbge %fcc2, check_branch
+fbge %fcc2, check_branch_fcc2_15
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_15:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f2
-fbge %fcc2, check_branch
+fbge %fcc2, check_branch_fcc2_16
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_16:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbuge %fcc2, check_branch
+fbuge %fcc2, check_branch_fcc2_17
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_17:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f1, %f0
-fbuge %fcc2, check_branch
+fbuge %fcc2, check_branch_fcc2_18
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_18:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f1, %f3
-fbuge %fcc2, check_branch
+fbuge %fcc2, check_branch_fcc2_19
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_19:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fble %fcc2, check_branch
+fble %fcc2, check_branch_fcc2_20
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_20:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f1
-fble %fcc2, check_branch
+fble %fcc2, check_branch_fcc2_21
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_21:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbule %fcc2, check_branch
+fbule %fcc2, check_branch_fcc2_22
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_22:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f1
-fbule %fcc2, check_branch
+fbule %fcc2, check_branch_fcc2_23
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_23:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f3
-fbule %fcc2, check_branch
+fbule %fcc2, check_branch_fcc2_24
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_24:
 udiv %l7, %l6, %l5
 
 # Branch ordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc2, %f0, %f0
-fbo %fcc2, check_branch
+fbo %fcc2, check_branch_fcc2_25
 set 1, %l6
-set 0, %l6
+check_branch_fcc2_25:
 udiv %l7, %l6, %l5
 
 
@@ -1728,524 +1317,210 @@ set 0x18, %l1
 
 # Branch always
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fba %fcc3, check_branch
+fba %fcc3, check_branch_fcc3_0
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_0:
 udiv %l7, %l6, %l5
 
 # Branch never
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbn %fcc3, check_branch
+fbn %fcc3, check_branch_fcc3_1
 set 1, %l6
-nop
+check_branch_fcc3_1:
 udiv %l7, %l6, %l5
 
 # Branch unordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f3, %f3
-fbu %fcc3, check_branch
+fbu %fcc3, check_branch_fcc3_2
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_2:
 udiv %l7, %l6, %l5
 
 # Branch greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f1, %f0
-fbg %fcc3, check_branch
+fbg %fcc3, check_branch_fcc3_3
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_3:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f1, %f0
-fbug %fcc3, check_branch
+fbug %fcc3, check_branch_fcc3_4
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_4:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f3, %f3
-fbug %fcc3, check_branch
+fbug %fcc3, check_branch_fcc3_5
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_5:
 udiv %l7, %l6, %l5
 
 # Branch less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f1
-fbl %fcc3, check_branch
+fbl %fcc3, check_branch_fcc3_6
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_6:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f1
-fbul %fcc3, check_branch
+fbul %fcc3, check_branch_fcc3_7
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_7:
 udiv %l7, %l6, %l5
 
 # Branch unordered and less
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f3, %f3
-fbul %fcc3, check_branch
+fbul %fcc3, check_branch_fcc3_8
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_8:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f1, %f0
-fblg %fcc3, check_branch
+fblg %fcc3, check_branch_fcc3_9
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_9:
 udiv %l7, %l6, %l5
 
 # Branch less or greater
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f1
-fblg %fcc3, check_branch
+fblg %fcc3, check_branch_fcc3_10
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_10:
 udiv %l7, %l6, %l5
 
 # Branch not equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f2, %f0
-fbne %fcc3, check_branch
+fbne %fcc3, check_branch_fcc3_11
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_11:
 udiv %l7, %l6, %l5
 
 # Branch equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbe %fcc3, check_branch
+fbe %fcc3, check_branch_fcc3_12
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_12:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f3, %f0
-fbue %fcc3, check_branch
+fbue %fcc3, check_branch_fcc3_13
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_13:
 udiv %l7, %l6, %l5
 
 # Branch unordered or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbue %fcc3, check_branch
+fbue %fcc3, check_branch_fcc3_14
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_14:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbge %fcc3, check_branch
+fbge %fcc3, check_branch_fcc3_15
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_15:
 udiv %l7, %l6, %l5
 
 # Branch greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f2
-fbge %fcc3, check_branch
+fbge %fcc3, check_branch_fcc3_16
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_16:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbuge %fcc3, check_branch
+fbuge %fcc3, check_branch_fcc3_17
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_17:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f1, %f0
-fbuge %fcc3, check_branch
+fbuge %fcc3, check_branch_fcc3_18
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_18:
 udiv %l7, %l6, %l5
 
 # Branch unordered or greater or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f1, %f3
-fbuge %fcc3, check_branch
+fbuge %fcc3, check_branch_fcc3_19
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_19:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fble %fcc3, check_branch
+fble %fcc3, check_branch_fcc3_20
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_20:
 udiv %l7, %l6, %l5
 
 # Branch less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f1
-fble %fcc3, check_branch
+fble %fcc3, check_branch_fcc3_21
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_21:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbule %fcc3, check_branch
+fbule %fcc3, check_branch_fcc3_22
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_22:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f1
-fbule %fcc3, check_branch
+fbule %fcc3, check_branch_fcc3_23
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_23:
 udiv %l7, %l6, %l5
 
 # Branch unordered or less or equal
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f3
-fbule %fcc3, check_branch
+fbule %fcc3, check_branch_fcc3_24
 set 1, %l6
-set 0, %l6
+check_branch_fcc3_24:
 udiv %l7, %l6, %l5
 
 # Branch ordered
 set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
 fcmps %fcc3, %f0, %f0
-fbo %fcc3, check_branch
+fbo %fcc3, check_branch_fcc3_25
 set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-set 0x18, %l1
-
-# Branch always
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fba %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch never
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbn %fcc3, check_branch
-set 1, %l6
-nop
-udiv %l7, %l6, %l5
-
-# Branch unordered
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f38, %f38
-fbu %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch greater
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f34, %f32
-fbg %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or greater
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f34, %f32
-fbug %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or greater
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f38, %f38
-fbug %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch less
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f34
-fbl %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered and less
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f34
-fbul %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered and less
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f38, %f38
-fbul %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch less or greater
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f34, %f32
-fblg %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch less or greater
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f34
-fblg %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch not equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f36, %f32
-fbne %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbe %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f38, %f32
-fbue %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbue %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch greater or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbge %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch greater or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f36
-fbge %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or greater or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbuge %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or greater or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f34, %f32
-fbuge %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or greater or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f34, %f38
-fbuge %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch less or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fble %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch less or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f34
-fble %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or less or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbule %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or less or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f34
-fbule %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch unordered or less or equal
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f38
-fbule %fcc3, check_branch
-set 1, %l6
-set 0, %l6
-udiv %l7, %l6, %l5
-
-# Branch ordered
-set 0, %l6
-rd %pc, %l0
-add %l0, %l1, %l0
-fcmpd %fcc3, %f32, %f32
-fbo %fcc3, check_branch
-set 1, %l6
-set 0, %l6
+check_branch_fcc3_25:
 udiv %l7, %l6, %l5
 
 # Nop slide
