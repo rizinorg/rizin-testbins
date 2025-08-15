@@ -303,6 +303,17 @@ check_branch_15_a:
 udiv %l7, %l6, %l5
 
 #
+# Execute delay slot on not taken
+#
+
+set 0, %l6
+addcc %g0, %g0, %i4
+bvs check_branch_dlslot_not_taken
+set 1, %l6
+check_branch_dlslot_not_taken:
+udiv %l7, %l6, %l5
+
+#
 # 64bit branches
 #
 
