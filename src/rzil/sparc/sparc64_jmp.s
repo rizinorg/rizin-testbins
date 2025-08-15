@@ -548,6 +548,83 @@ set 0, %l6
 check_branch_xcc_15_a:
 udiv %l7, %l6, %l5
 
+#
+# Register based jumps
+#
+
+set 0, %l6
+brz %l6, check_branch_reg_0
+set 1, %l6
+check_branch_reg_0:
+udiv %l7, %l6, %l5
+
+set 0, %l6
+brlez %o1, check_branch_reg_1
+set 1, %l6
+check_branch_reg_1:
+udiv %l7, %l6, %l5
+
+set 0, %l6
+brlez %l6, check_branch_reg_2
+set 1, %l6
+check_branch_reg_2:
+udiv %l7, %l6, %l5
+
+set 0, %l6
+brlz %o1, check_branch_reg_3
+set 1, %l6
+check_branch_reg_3:
+udiv %l7, %l6, %l5
+
+set 0, %l6
+brgz %o0, check_branch_reg_4
+set 1, %l6
+check_branch_reg_4:
+udiv %l7, %l6, %l5
+
+set 0, %l6
+brgez %o0, check_branch_reg_5
+set 1, %l6
+check_branch_reg_5:
+udiv %l7, %l6, %l5
+
+set 0, %l6
+brgez %l6, check_branch_reg_6
+set 1, %l6
+check_branch_reg_6:
+udiv %l7, %l6, %l5
+
+#
+# Register based jumps annulled
+#
+
+set 1, %l6
+
+brz,a %o0, check_branch_reg_a_0
+set 0, %l6
+check_branch_reg_a_0:
+udiv %l7, %l6, %l5
+
+brlez,a %o0, check_branch_reg_a_1
+set 0, %l6
+check_branch_reg_a_1:
+udiv %l7, %l6, %l5
+
+brlz,a %o0, check_branch_reg_a_3
+set 0, %l6
+check_branch_reg_a_3:
+udiv %l7, %l6, %l5
+
+brgz,a %o1, check_branch_reg_a_4
+set 0, %l6
+check_branch_reg_a_4:
+udiv %l7, %l6, %l5
+
+brgez,a %o1, check_branch_reg_a_5
+set 0, %l6
+check_branch_reg_a_5:
+udiv %l7, %l6, %l5
+
 # Floats
 
 set load_zero64, %o0
