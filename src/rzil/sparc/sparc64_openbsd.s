@@ -150,6 +150,7 @@ run_all_tests:
     # BEGIN: Relevant tests
 
     # bshuffle test
+    bmask %l0, %l1, %l6
     bshuffle %f0, %f2, %f16
 
     #
