@@ -6,7 +6,7 @@ b *(run_all_tests + 120)
 r
 disas
 
-while ($pc < (run_all_tests + 208))
+while ($pc < (run_all_tests + 212))
 	info all-registers
 	disas $pc,$pc+4
 	si
