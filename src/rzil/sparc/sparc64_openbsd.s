@@ -108,7 +108,16 @@ run_all_tests:
 
     # Setup regs
 
-    set random_data_0, %l7
+    # Load address of random_data_0 into %l7
+    # Figured out by doing the same in C and compiling with gcc -s
+    sethi %hi(_GLOBAL_OFFSET_TABLE_-8), %l7
+    add %l7, %lo(_GLOBAL_OFFSET_TABLE_-4), %l7
+    rd %pc, %o7
+    add %l7, %o7, %l7
+    sethi %hi(random_data_0), %g1
+    or %g1, %lo(random_data_0), %g1
+    ldx [%l7+%g1], %l7
+    # set random_data_0, %l7
 
     ld [%l7+0x00], %l0
     ld [%l7+0x10], %l1
