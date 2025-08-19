@@ -5,5 +5,5 @@
 # Tested on OpenBSD 7.7 sparc64
 # Install gas from ports
 
-gas -KPIC -xarch=v9m -64 -I. -o sparc64_openbsd.o sparc64_openbsd.s
-gcc -g -O0 sparc64_openbsd.o -o sparc64_insn_openbsd.bin main.c
+gas -KPIC -xarch=v9m -64 -I. -o sparc64_noqemu.o sparc64_noqemu.s
+gcc -g -O0 sparc64_noqemu.o -o sparc64_insn_openbsd.bin main.c
