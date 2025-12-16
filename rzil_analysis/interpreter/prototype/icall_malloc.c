@@ -4,9 +4,12 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-static void *function_0() { return calloc(1, 1); }
-static void *function_1() { return malloc(1); }
-static void *function_2() { return realloc(NULL, 1); }
+static uint64_t z = 0;
+static void *some_ptr() { return &z; };
+
+static void *function_0() { return some_ptr(); }
+static void *function_1() { return some_ptr(); }
+static void *function_2() { return some_ptr(); }
 
 typedef void *(*fcn)();
 
@@ -20,7 +23,7 @@ static fcn fcn_arr[] = {
 /// But only after paths over the iterations are taken.
 int main() {
   size_t x = 0;
-  for (size_t i = 0; i < 2; ++i) {
+  for (size_t i = 0; i < 3; ++i) {
     uint8_t *ptr = fcn_arr[i]();
     x += ptr[0];
   }
