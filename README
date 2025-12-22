@@ -37,8 +37,17 @@ RISC-V Requirements
 /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -march=rv32im -mabi=ilp32 -nostdlib -e main -o riscv_mul_div_bitwise_32.o mul_div_bitwise.c
  ```
 
-    * 64-bit 
+   * 64-bit 
  ```bash
  /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -o riscv_mul_div_bitwise.o mul_div_bitwise.c
  ```
     
+ * To make riscv_crypto_test.c:
+ ```bash
+  /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -march=rv64gc_zknd_zkne_zknh -o riscv_crypto_64 riscv_crypto_test.c
+```
+
+ * To make riscv_vec_arith
+ ```bash
+/opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -O3 -march=rv64gcv -fopenmp-simd riscv_vec_arith.c -o riscv_vec_arith -lm
+ ```
