@@ -49,3 +49,25 @@ RISC-V Requirements
  ```bash
  /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc  -march=rv64imafd_zfh_zfa -O2 src/riscv_float_rounding.c -o riscv_float_rounding
  ```
+
+  * To make riscv_jal_near.s:
+   * 32-bit
+ ```bash
+llvm-mc -filetype=obj -triple=riscv32-unknown-elf -mattr=-relax src/riscv_jal_near.s  -o riscv_relocs_jal_near_32
+ ```
+   * 64-bit
+ ```bash
+llvm-mc -filetype=obj -triple=riscv64-unknown-elf -mattr=-relax src/riscv_jal_near.s  -o riscv_relocs_jal_near_64
+ ```
+
+
+ * To make riscv_jal_far.s:
+   * 32-bit
+ ```bash
+llvm-mc -filetype=obj -triple=riscv32-unknown-elf -mattr=-relax src/riscv_jal_far.s  -o riscv_relocs_jal_far_32
+ ```
+   * 64-bit
+ ```bash
+llvm-mc -filetype=obj -triple=riscv64-unknown-elf -mattr=-relax src/riscv_jal_far.s  -o riscv_relocs_jal_far_64
+ ```
+
