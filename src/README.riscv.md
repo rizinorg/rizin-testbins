@@ -71,3 +71,18 @@ llvm-mc -filetype=obj -triple=riscv32-unknown-elf -mattr=-relax src/riscv_jal_fa
 llvm-mc -filetype=obj -triple=riscv64-unknown-elf -mattr=-relax src/riscv_jal_far.s  -o riscv_relocs_jal_far_64
  ```
 
+ * To make riscv_add_relocs.s:
+ ```bash
+ llvm-mc -filetype=obj -triple=riscv32 -mattr=+relax src/riscv_add_relocs.s -o riscv_relocs_add
+ ```
+
+ * To make riscv_hi_lo_is.s:
+   * 32-bit
+ ```bash
+ llvm-mc -filetype=obj -triple=riscv32-unknown-elf src/riscv_hi_lo_is.s -o riscv_relocs_hi_lo_is_32
+ ```
+   * 64-bit
+ ```bash
+ llvm-mc -filetype=obj -triple=riscv64-unknown-elf src/riscv_hi_lo_is.s -o riscv_relocs_hi_lo_is_64
+ ```
+
