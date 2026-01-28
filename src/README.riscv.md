@@ -71,3 +71,46 @@ llvm-mc -filetype=obj -triple=riscv32-unknown-elf -mattr=-relax src/riscv_jal_fa
 llvm-mc -filetype=obj -triple=riscv64-unknown-elf -mattr=-relax src/riscv_jal_far.s  -o riscv_relocs_jal_far_64
  ```
 
+ * To make riscv_add_relocs.s:
+ ```bash
+ llvm-mc -filetype=obj -triple=riscv32 -mattr=+relax src/riscv_add_relocs.s -o riscv_relocs_add
+ ```
+
+ * To make riscv_hi_lo_is.s:
+   * 32-bit
+ ```bash
+ llvm-mc -filetype=obj -triple=riscv32-unknown-elf src/riscv_hi_lo_is.s -o riscv_relocs_hi_lo_is_32
+ ```
+   * 64-bit
+ ```bash
+ llvm-mc -filetype=obj -triple=riscv64-unknown-elf src/riscv_hi_lo_is.s -o riscv_relocs_hi_lo_is_64
+ ```
+ 
+ * To make riscv_branch_near.c:
+   * 32-bit
+ ```bash
+ clang -target riscv32 -c -O1 src/riscv_branch_near.c -o riscv_relocs_branch_near_32
+ ```
+   * 64-bit
+```bash
+clang -target riscv64 -c -O1 src/riscv_branch_near.c -o riscv_relocs_branch_near_64
+```
+ 	
+ * To make riscv_branch
+   * 32-bit
+```bash
+clang -target riscv32 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_far_32
+```
+   * 64-bit
+```bash
+clang -target riscv64 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_far_64
+```
+ * To make riscv_relocations_relative_32_64.c:
+   * 32-bit 
+ ```bash
+ clang -target riscv32 -c -O0 src/riscv_relocations_relative_32_64.c -o elf/riscv_relocs_32
+ ```
+   * 64-bit 
+ ```bash
+  /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -c src/riscv_relocations_relative_32_64.c -o elf/riscv_relocs_64
+ ```
