@@ -105,3 +105,12 @@ clang -target riscv32 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_f
 ```bash
 clang -target riscv64 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_far_64
 ```
+ * To make riscv_relocations_relative_32_64.c:
+   * 32-bit 
+ ```bash
+ clang -target riscv32 -c -O0 src/riscv_relocations_relative_32_64.c -o elf/riscv_relocs_32
+ ```
+   * 64-bit 
+ ```bash
+  /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -c src/riscv_relocations_relative_32_64.c -o elf/riscv_relocs_64
+ ```
