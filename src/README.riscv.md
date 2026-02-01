@@ -96,7 +96,7 @@ llvm-mc -filetype=obj -triple=riscv64-unknown-elf -mattr=-relax src/riscv_jal_fa
 clang -target riscv64 -c -O1 src/riscv_branch_near.c -o riscv_relocs_branch_near_64
 ```
  	
- * To make riscv_branch
+ * To make riscv_branch_far.c
    * 32-bit
 ```bash
 clang -target riscv32 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_far_32
@@ -113,4 +113,14 @@ clang -target riscv64 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_f
    * 64-bit 
  ```bash
   /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -c src/riscv_relocations_relative_32_64.c -o elf/riscv_relocs_64
- ```
+ 
+ * To make riscv_branch_compressed_near.c:
+   * 32-bit:
+   ```bash
+   clang -target riscv32 -march=rv32ic -c -O1 src/riscv_branch_compressed_near.c -o riscv_relocs_rvc_branch_near_32
+   ```
+
+   * 64-bit:
+   ```bash
+    clang -target riscv64 -march=rv64ic -c -O1 src/riscv_branch_compressed_near.c -o riscv_relocs_rvc_branch_near_64
+   
