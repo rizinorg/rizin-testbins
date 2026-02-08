@@ -13,7 +13,8 @@
 pthread_barrier_t barrier;
 
 void breakpoint_here(void) {
-    asm volatile("int3");
+    // asm volatile("int3");
+    asm volatile("brk #0");
 }
 
 void *thread_func(void *arg) {
@@ -37,6 +38,8 @@ void *thread_func(void *arg) {
     char *big = malloc(1024);
     strcpy(big, "hello world");
     printf("thread %d Big chunk at %p: %s\n", thread_idx, big, big);
+
+    pthread_barrier_wait(&barrier);
 
     if (thread_idx == 0) {
         printf("\nThreads allocated. Press Enter to continue...\n");
