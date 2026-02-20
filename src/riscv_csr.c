@@ -641,6 +641,7 @@ DEMO_RO(hpmcounter29)
 
 DEMO_RO(hpmcounter30)
 DEMO_RO(hpmcounter31)
+#if __riscv_xlen == 32
 /* RV32-only high halves */
 
 DEMO_RO(cycleh)
@@ -685,7 +686,7 @@ DEMO_RO(hpmcounter29h)
 
 DEMO_RO(hpmcounter30h)
 DEMO_RO(hpmcounter31h)
-
+#endif
 /* -- Supervisor -- */
 
 DEMO_RO(sstatus)
@@ -1182,6 +1183,8 @@ DEMO_ALL_FORMS(hpmcounter29)
 
 DEMO_ALL_FORMS(hpmcounter30)
 DEMO_ALL_FORMS(hpmcounter31)
+
+#if __riscv_xlen == 32
 /* RV32-only high halves */
 
 DEMO_ALL_FORMS(cycleh)
@@ -1226,6 +1229,7 @@ DEMO_ALL_FORMS(hpmcounter29h)
 
 DEMO_ALL_FORMS(hpmcounter30h)
 DEMO_ALL_FORMS(hpmcounter31h)
+#endif
 
 /* -- Supervisor -- */
 
@@ -1736,6 +1740,7 @@ int main(void) {
 	csr_ro_hpmcounter29();
 	csr_ro_hpmcounter30();
 	csr_ro_hpmcounter31();
+#if __riscv_xlen == 32
 	csr_ro_cycleh();
 	csr_ro_timeh();
 	csr_ro_instreth();
@@ -1768,6 +1773,7 @@ int main(void) {
 	csr_ro_hpmcounter29h();
 	csr_ro_hpmcounter30h();
 	csr_ro_hpmcounter31h();
+#endif
 	/* ---- RO: Supervisor ---- */
 	csr_ro_sstatus();
 	csr_ro_sie();
@@ -2139,6 +2145,7 @@ int main(void) {
 	csr_rw_hpmcounter29();
 	csr_rw_hpmcounter30();
 	csr_rw_hpmcounter31();
+#if __riscv_xlen == 32
 	csr_rw_cycleh();
 	csr_rw_timeh();
 	csr_rw_instreth();
@@ -2171,6 +2178,7 @@ int main(void) {
 	csr_rw_hpmcounter29h();
 	csr_rw_hpmcounter30h();
 	csr_rw_hpmcounter31h();
+#endif
 	/* ---- RW: Supervisor ---- */
 	csr_rw_sstatus();
 	csr_rw_sie();
