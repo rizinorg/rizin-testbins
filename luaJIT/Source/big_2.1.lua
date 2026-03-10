@@ -10,7 +10,7 @@ local base_stats = {
     status = nil
 }
 
-local function make_damage_calculator(base_multiplier)
+local function calculator(base_multiplier)
     local combo_count = 0
     
     return function(weapon_damage, is_crit)
@@ -24,12 +24,12 @@ local function make_damage_calculator(base_multiplier)
     end
 end
 
-local calc_dmg = make_damage_calculator(1.2)
+local calc = calculator(1.2)
 
-local hit1, hits_total = calc_dmg(45, false)
-local hit2, hits_total2 = calc_dmg(50, true)
+local hit1, hits_total = calc(45, false)
+local hit2, hits_total2 = calc(50, true)
 
-local function math_torture(x, y)
+local function math(x, y)
     local a = x + y
     local b = x - 10
     local c = 100 * y
@@ -63,7 +63,7 @@ local function inventory_system()
     return inv
 end
 
-local function loop_torture()
+local function loop()
     local sum = 0
  
     for i = 1, 100, 2 do
@@ -89,7 +89,7 @@ local function loop_torture()
     return sum
 end
 
-local function comparison_torture(val)
+local function comparison(val)
     if val < 10 then
         return -1
     elseif val >= 100 then 
@@ -119,10 +119,10 @@ end
 
 -- MAIN EXECUTION
 local function main()
-    local m1, m2, m3 = math_torture(15, 7)
+    local m1, m2, m3 = math(15, 7)
     local inv = inventory_system()
-    local loop_res = loop_torture()
-    local comp_res = comparison_torture(50)
+    local loop_res = loop()
+    local comp_res = comparison(50)
     
     local final_val = vararg_and_tailcall("Result", 10, 20, 30)
     
