@@ -135,3 +135,10 @@ clang -target riscv64 -c -O1 src/riscv_branch_far.c -o elf/riscv_relocs_branch_f
    ```bash
    clang -target riscv64 -march=rv64ic -c -O1 src/riscv_branch_compressed_far.c -o elf/riscv_relocs_rvc_branch_far_64
    ```
+
+ * To make riscv_csr_all.c:
+
+   * 64-bit:
+   ```bash
+    /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc src/riscv_csr.c -o elf/riscv_csr_64
+   ```
