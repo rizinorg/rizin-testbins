@@ -1,7 +1,68 @@
 RISC-V Requirements
 -------------------
+ * To get `/opt/riscv/bin/riscv64-unknown-linux-gnu-gcc`:
+  * Download and make the GNU toolchain from https://github.com/riscv-collab/riscv-gnu-toolchain, follow the instructions to install it, the commit hash used to build the binaries committed to this repo is 357800bf2c5115ade5bc33f69af79c641db63cc8
+ * To get `clang` and `llvm-mc`:
+  * Download them from any repositery, ensure they have the following version string:
+    ```bash
+    $ clang --version
+      => Ubuntu clang version 18.1.3 (1ubuntu1)
+      => Target: x86_64-pc-linux-gnu
+      => Thread model: posix
+      => InstalledDir: /usr/bin
+    $ llvm-mc --version
+      => Ubuntu LLVM version 18.1.3
+      => Optimized build.
+      => Registered Targets:
+         aarch64     - AArch64 (little endian)
+         aarch64_32  - AArch64 (little endian ILP32)
+         aarch64_be  - AArch64 (big endian)
+         amdgcn      - AMD GCN GPUs
+         arm         - ARM
+         arm64       - ARM64 (little endian)
+         arm64_32    - ARM64 (little endian ILP32)
+         armeb       - ARM (big endian)
+         avr         - Atmel AVR Microcontroller
+         bpf         - BPF (host endian)
+         bpfeb       - BPF (big endian)
+         bpfel       - BPF (little endian)
+         hexagon     - Hexagon
+         lanai       - Lanai
+         loongarch32 - 32-bit LoongArch
+         loongarch64 - 64-bit LoongArch
+         m68k        - Motorola 68000 family
+         mips        - MIPS (32-bit big endian)
+         mips64      - MIPS (64-bit big endian)
+         mips64el    - MIPS (64-bit little endian)
+         mipsel      - MIPS (32-bit little endian)
+         msp430      - MSP430 [experimental]
+         nvptx       - NVIDIA PTX 32-bit
+         nvptx64     - NVIDIA PTX 64-bit
+         ppc32       - PowerPC 32
+         ppc32le     - PowerPC 32 LE
+         ppc64       - PowerPC 64
+         ppc64le     - PowerPC 64 LE
+         r600        - AMD GPUs HD2XXX-HD6XXX
+         riscv32     - 32-bit RISC-V
+         riscv64     - 64-bit RISC-V
+         sparc       - Sparc
+         sparcel     - Sparc LE
+         sparcv9     - Sparc V9
+         systemz     - SystemZ
+         thumb       - Thumb
+         thumbeb     - Thumb (big endian)
+         ve          - VE
+         wasm32      - WebAssembly 32-bit
+         wasm64      - WebAssembly 64-bit
+         x86         - 32-bit X86: Pentium-Pro and above
+         x86-64      - 64-bit X86: EM64T and AMD64
+         xcore       - XCore
+         xtensa      - Xtensa 32
+  ```
+  * To download Bootlin rv32, download from https://toolchains.bootlin.com/downloads/releases/toolchains/riscv32-ilp32d/tarballs/riscv32-ilp32d--musl--stable-2025.08-1.tar.xz and untar to any location.
 
- * Download and make the GNU toolchain from https://github.com/riscv-collab/riscv-gnu-toolchain, follow the instructions to install it, the commit hash used to build the binaries committed to this repo is 357800bf2c5115ade5bc33f69af79c641db63cc8
+This is a best-effort attempt at reproducibility, there might be hidden or ambient setup on the original dev machine that will make the committed binaries in this repo not bit-for-bit identical to any binaries newly compiled on other machines using those instructions. Please use the comitted binaries only for maximum reproducibility. 
+
 
  * To make riscv_arrsum.c: 
  ```bash
@@ -36,6 +97,11 @@ RISC-V Requirements
  ```
 
  * To make riscv_bitmanip.c:
+    * 32-bit (Bootlin toolchain)
+    ```bash
+    ./riscv32-ilp32d--musl--stable-2025.08-1/bin/riscv32-buildroot-linux-musl-gcc src/riscv_bitmanip.c -O3 -o riscv_bitmanip_32
+    ```
+    * 64-bit
  ```bash
 /opt/riscv/bin/riscv64-unknown-linux-gnu-gcc -march=rv64gc_zbb_zbs -O2 src/riscv_bitmanip.c -o elf/riscv_bitmanip
  ```
