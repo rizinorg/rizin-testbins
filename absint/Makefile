@@ -7,9 +7,9 @@ CC_mips64=mips64-linux-gnu-gcc
 
 ARCH=x86_64
 CC=$(CC_$(ARCH))
-CFLAGS=
+CFLAGS=-O0
 
-TARGETS=icall_malloc unmapped_fcn_in_loop discover_recurse
+TARGETS=indirect_call
 
 .PHONY: all
 all: $(foreach target,$(TARGETS),$(ARCH)_$(target).o)
@@ -28,7 +28,7 @@ ARCH_TARGET=all
 
 .PHONY: all_archs
 all_archs:
-	make $(ARCH_TARGET) # default: ARCH=x86_64 CFLAGS 
+	make $(ARCH_TARGET) # default: ARCH=x86_64 CFLAGS=-O0
 	make $(ARCH_TARGET) ARCH=hexagon CFLAGS=-O0
 	make $(ARCH_TARGET) ARCH=sparc64 CFLAGS=-O0
 	make $(ARCH_TARGET) ARCH=arm CFLAGS=-O0
