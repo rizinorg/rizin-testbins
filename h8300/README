@@ -1,0 +1,32 @@
+H8/300 (h8300) test binaries
+============================
+
+GCC-built ELF binaries for the Hitachi H8/300 architecture (normal mode,
+16-bit), used as reproduction cases for rizin h8300 analysis issues
+(#6794 stackframe annotation gap, #6795 rz_analysis_mask heap overflow).
+
+Files
+-----
+
+* `main.elf` — small multi-function C program compiled with debug info
+  (DWARF). sha256 `121bc56ec4a7326e80139dd536e5ca99c11d04d40f90d2d0b236e992109bf3cd`
+* `main-nodebug.elf` — same program without debug info.
+  sha256 `8891b8c2a2b24adb2c2fe0d2cee9b2a93008c8813d9f972357e0e32f9ad47353`
+* `emulateme.c` — the C source both binaries were built from.
+
+Rebuild
+-------
+
+With an h8300 GCC toolchain (exact original flags not recorded; the debug
+binary contains DWARF from a `-g` build of the source, approximate):
+
+    h8300-elf-gcc -g -O0 -o main.elf emulateme.c
+    h8300-elf-gcc -O0 -o main-nodebug.elf emulateme.c
+
+Reproduction notes
+------------------
+
+    rizin -q -c 'ao @ 0x534' main.elf      # aborts: heap overflow (#6795)
+    rizin -q -c 'ao @ 0x47e' main.elf      # fine (control)
+    rizin -A -q -c 'afi @ dbg.main~stackframe' main.elf
+                                           # reports 8, ISA truth is 12 (#6794)
