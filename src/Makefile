@@ -38,3 +38,9 @@ mapper-macos-arm64: ../mach0/mapper-macos-arm64
 
 ../elf/vars-complex-x86_64-sp: vars.c
 	gcc -fomit-frame-pointer -O0 -o $@ vars-complex.c
+
+../elf/retpoline-call.o: retpoline-call.c
+	gcc -O2 -fno-pic -mindirect-branch=thunk-extern -mfunction-return=thunk-extern -c retpoline-call.c -o $@
+
+../elf/dwarf/rel_globals.o: rel_globals.c
+	gcc -g -gz=none -O0 -fno-common -fno-asynchronous-unwind-tables -fdebug-prefix-map=$(CURDIR)=. -c rel_globals.c -o $@
